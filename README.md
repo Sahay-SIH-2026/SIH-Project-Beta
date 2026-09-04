@@ -1,70 +1,72 @@
 # SAHAY — Victim Support Continuity & Early-Warning Platform
 
-> **Phase 1 — Skeleton.** This is a hackathon MVP skeleton. No database, no authentication, and no ML models are connected yet.
+> **Phase 1 — Project Skeleton**
+> This prototype uses synthetic/demo data only. No real victim or survivor data is processed.
 
 ---
 
 ## What is SAHAY?
 
-SAHAY is a human-centered platform that helps authorized support workers identify changing well-being needs of victims over time.
+SAHAY is a hackathon MVP focused on improving the continuity of victim and survivor support. It helps **authorized support workers** identify changing support needs over time, so that appropriate follow-up actions can be taken in a timely and human-centred manner.
 
-It surfaces **support-prioritisation signals** — not clinical diagnoses — and always requires a human counsellor to review and act.
+### Important — what SAHAY is not
 
-SAHAY is **not** a replacement for police, courts, counsellors, or emergency services. It does not provide autonomous counselling or clinical diagnostics.
+- SAHAY does **not** replace police, courts, NGOs, legal aid, welfare officers, or counselors.
+- SAHAY does **not** provide medical or clinical diagnosis of any kind.
+- AI features are intended only as a **support-prioritisation signal** to assist human decision-making.
+- **Human review is mandatory** for all AI-assisted workflows.
+- The current prototype uses **synthetic/demo data only**.
 
 ---
 
-## Current Development Phase
+## Current Phase
 
-**Phase 1 — Skeleton**
+```
+Phase 1 — Project Skeleton
+```
 
-| # | Phase                        | Status      |
-|---|------------------------------|-------------|
-| 1 | Skeleton                     | ✅ Current  |
-| 2 | Database                     | ⏳ Upcoming |
-| 3 | Authentication + RBAC        | ⏳ Upcoming |
-| 4 | API                          | ⏳ Upcoming |
-| 5 | Core UI                      | ⏳ Upcoming |
-| 6 | Risk Engine                  | ⏳ Upcoming |
-| 7 | ML Integration               | ⏳ Upcoming |
-| 8 | Voice + Notifications        | ⏳ Upcoming |
+The skeleton establishes the application structure, routing, component system, TypeScript types, and design tokens. No database, authentication, or ML is connected yet.
 
 ---
 
 ## Tech Stack
 
-| Layer         | Technology                        |
-|---------------|-----------------------------------|
-| Framework     | Next.js 15 (App Router)           |
-| Language      | TypeScript                        |
-| Styling       | Tailwind CSS v4                   |
-| UI Components | shadcn/ui                         |
-| Fonts         | Inter (Google Fonts)              |
-| Linting       | ESLint (next/core-web-vitals)     |
+| Layer       | Technology                  |
+|-------------|-----------------------------|
+| Framework   | Next.js (App Router)        |
+| Language    | TypeScript                  |
+| UI Library  | React                       |
+| Styling     | Tailwind CSS v4             |
+| Components  | shadcn/ui                   |
+
+**Future phases will add** (not yet implemented):
+
+- PostgreSQL + Prisma (database)
+- Authentication & RBAC
+- REST/tRPC API layer
+- Risk engine
+- Python ML service
+- Voice input
+- SMS / email notifications
 
 ---
 
-## Local Setup
+## Local Development
 
 ```bash
-cd sahay
+# 1. Install dependencies
 npm install
+
+# 2. Copy environment template (no secrets required for Phase 1)
+cp .env.example .env.local
+
+# 3. Start the development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-No external services or environment variables are required to run the skeleton.
-
----
-
-## Environment Variables
-
-Copy `.env.example` to `.env.local` (Phase 2+):
-
-```bash
-cp .env.example .env.local
-```
+No external services or paid accounts are required to run the Phase 1 skeleton.
 
 ---
 
@@ -72,94 +74,75 @@ cp .env.example .env.local
 
 ```
 sahay/
-├── app/                  Next.js App Router pages + API routes
-│   ├── page.tsx          Landing page
-│   ├── layout.tsx        Root layout
-│   ├── victim/           Victim portal
-│   ├── counselor/        Counselor portal
-│   ├── admin/            Admin portal
+├── app/                  Next.js App Router — pages, layouts, API routes
+│   ├── victim/           Victim portal routes
+│   ├── counselor/        Counselor portal routes
+│   ├── admin/            Admin portal routes
 │   └── api/health/       Health-check endpoint
 │
 ├── components/
 │   ├── coming-soon/      <ComingSoon /> — placeholder for unimplemented features
-│   ├── layout/           PublicHeader, PublicFooter
-│   ├── navigation/       VictimNav, CounselorNav, AdminNav
-│   └── shared/           PageHeader and shared UI helpers
+│   ├── layout/           Shared header and footer
+│   ├── navigation/       Role-specific navigation components
+│   ├── shared/           General-purpose UI helpers
+│   └── ui/               shadcn/ui primitives
 │
-├── features/             Feature module stubs (victim, counselor, admin, cases…)
+├── features/             Feature module boundaries (victim, counselor, admin, …)
 ├── lib/
-│   ├── constants/        App-wide constants, routes, product labels
-│   └── utils/            cn(), date formatting, relative time
-├── types/                TypeScript domain types (User, Case, Alert, …)
-└── styles/               Global CSS overrides (if needed beyond globals.css)
+│   ├── config/           Environment-aware configuration
+│   ├── constants/        App-wide constants, routes, product constraint labels
+│   └── utils/            Utility functions (cn, date formatting, …)
+│
+└── types/                TypeScript domain interfaces (User, Case, Alert, …)
 ```
 
 ---
 
 ## Available Routes
 
-### Public
-
-| Route | Description         |
-|-------|---------------------|
-| `/`   | Landing page        |
-
-### Victim Portal
-
-| Route               | Description              |
-|---------------------|--------------------------|
-| `/victim`           | Home — welcome & CTAs    |
-| `/victim/case`      | Case details             |
-| `/victim/check-in`  | Well-being check-in      |
-| `/victim/data`      | My Data & consent        |
-| `/victim/support`   | Support contact info     |
-
-### Counselor Portal
-
 | Route                      | Description              |
 |----------------------------|--------------------------|
-| `/counselor`               | Dashboard                |
+| `/`                        | Landing page             |
+| `/victim`                  | Victim portal home       |
+| `/victim/case`             | Case details             |
+| `/victim/check-in`         | Well-being check-in      |
+| `/victim/data`             | My Data & consent        |
+| `/victim/support`          | Support contact          |
+| `/counselor`               | Counselor dashboard      |
 | `/counselor/cases`         | Case list                |
 | `/counselor/alerts`        | Support alerts           |
 | `/counselor/follow-ups`    | Follow-up tasks          |
 | `/counselor/reports`       | Reports                  |
 | `/counselor/audit-log`     | Counselor audit log      |
-
-### Admin Portal
-
-| Route                    | Description              |
-|--------------------------|--------------------------|
-| `/admin`                 | Dashboard                |
-| `/admin/users`           | User management          |
-| `/admin/assignments`     | Case assignments         |
-| `/admin/audit-log`       | System audit log         |
-
-### API
-
-| Route          | Description     |
-|----------------|-----------------|
-| `/api/health`  | Health check    |
+| `/admin`                   | Admin dashboard          |
+| `/admin/users`             | User management          |
+| `/admin/assignments`       | Case assignments         |
+| `/admin/audit-log`         | System audit log         |
+| `/api/health`              | Health-check (`{ status: "ok" }`) |
 
 ---
 
-## Design Principles
+## Development Roadmap
 
-- **No government seals or official emblems.** SAHAY is not an official GoI product.
-- **No fake emergency numbers.** Emergency sections are clearly marked as placeholders.
-- **No clinical language.** Support signals use "Support review recommended", never "AI diagnosed" or clinical diagnosis language.
-- **Human review is mandatory.** All ML/risk signals will require counsellor approval in future phases.
+| # | Phase                     | Status      |
+|---|---------------------------|-------------|
+| 1 | Skeleton                  | ✅ Current  |
+| 2 | Database                  | ⏳ Planned  |
+| 3 | Authentication + RBAC     | ⏳ Planned  |
+| 4 | API                       | ⏳ Planned  |
+| 5 | Core UI                   | ⏳ Planned  |
+| 6 | Risk Engine               | ⏳ Planned  |
+| 7 | ML Integration            | ⏳ Planned  |
+| 8 | Voice + Notifications     | ⏳ Planned  |
 
 ---
 
-## Contributing
+## Zero-Budget Principle
 
-This is a hackathon project. Follow the phase order above when adding new functionality.
+SAHAY prioritizes open-source, local, and free-tier tooling. No paid service is mandatory to run the MVP. Future integrations are designed behind provider interfaces so that a free/local implementation can always substitute a commercial one.
 
-Each new feature should be added behind its module boundary:
+---
 
-```
-features/<module>/
-```
+## License
 
-Use `<ComingSoon />` for anything not yet implemented. Do not create fake functional buttons.
-# SIH-Project-Beta
+[MIT](./LICENSE) — Copyright © 2026 SAHAY Contributors
