@@ -1,0 +1,9 @@
+// lib/config — Application configuration
+// Add environment-validated config here using zod/t3-env in future phases.
+
+export const config = {
+  appName: "SAHAY",
+  appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  isDev: process.env.NODE_ENV === "development",
+  isProd: process.env.NODE_ENV === "production",
+} as const;
