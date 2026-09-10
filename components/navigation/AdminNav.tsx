@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, GitMerge, ClipboardList } from "lucide-react";
 import { ROUTES, APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 
 const NAV_ITEMS = [
   { href: ROUTES.admin.root,        label: "Dashboard",   icon: LayoutDashboard },
@@ -56,6 +57,10 @@ export function AdminNav() {
           })}
         </ul>
       </nav>
+
+      <div className="border-t border-sidebar-border p-3">
+        <SignOutButton className="w-full rounded-md px-3 py-2 text-sidebar-foreground/60 hover:bg-destructive/10 hover:text-destructive" />
+      </div>
     </aside>
   );
 }

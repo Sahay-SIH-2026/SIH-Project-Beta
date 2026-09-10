@@ -1,22 +1,53 @@
 /**
- * /admin/assignments — Case assignment management
+ * /admin/assignments — Administrative Case Allocation & Workload Distribution
  */
 
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/coming-soon";
+import { getCases } from "@/lib/db/cases";
+import { listProfilesByRole } from "@/lib/db/profiles";
+import { CaseAssignmentManager } from "@/components/admin/CaseAssignmentManager";
+import type { CaseRow, ProfileRow } from "@/types/database.types";
 
-export const metadata: Metadata = { title: "Assignments" };
+export const metadata: Metadata = { title: "Case Assignments" };
 
-export default function AdminAssignmentsPage() {
+type CaseWithRelations = CaseRow & {
+  victim?: { id: string; display_name: string } | null;
+  counselor?: { id: string; display_name: string } | null;
+};
+
+export default async function AdminAssignmentsPage() {
+  let cases: CaseWithRelations[] = [];
+  let counselors: ProfileRow[] = [];
+
+  try {
+    const [casesData, counselorProfiles] = await Promise.all([
+      getCases().catch(() => []),
+      listProfilesByRole("COUNSELOR").catch(() => []),
+    ]);
+
+    cases = (casesData as unknown as CaseWithRelations[]) || [];
+    counselors = (counselorProfiles as unknown as ProfileRow[]) || [];
+  } catch (e) {
+    console.error("Error loading admin assignment data:", e);
+  }
+
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-foreground">Assignments</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Assign cases to counselors and manage workload distribution.
-      </p>
-      <div className="mt-8">
-        <ComingSoon plannedPhase="Phase 5 — Core UI" />
+    <div className="space-y-6">
+      <div className="mb-5 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+        <strong>Administrative Authority:</strong> Assigning a case grants the authorized counselor access to confidential notes and check-in history.
       </div>
+
+      <div>
+        <h1 className="text-2xl font-semibold text-foreground">Case Assignments</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Allocate incoming victim cases to certified support counselors and monitor district caseloads.
+        </p>
+      </div>
+
+      <CaseAssignmentManager
+        initialCases={cases}
+        counselors={counselors.map((c) => ({ id: c.id, display_name: c.display_name }))}
+      />
     </div>
   );
 }

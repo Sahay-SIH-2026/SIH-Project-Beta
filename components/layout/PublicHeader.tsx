@@ -23,10 +23,16 @@ export function PublicHeader() {
           </span>
         </Link>
 
-        <nav aria-label="Main navigation">
-          <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+        <nav aria-label="Main navigation" className="flex items-center gap-3">
+          <span className="hidden sm:inline-block rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800">
             Prototype — Dev Build
           </span>
+          <Link
+            href="/login"
+            className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 no-underline shadow-xs"
+          >
+            Sign In
+          </Link>
         </nav>
       </div>
     </header>

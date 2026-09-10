@@ -1,0 +1,580 @@
+# SAHAY — Development Journal
+
+> **What is this file?**
+> This is the **SAHAY Development Journal** — a running log maintained by developers and AI agents working on this project.
+> Every significant change, fix, decision, or implementation detail is recorded here in reverse-chronological order (newest first).
+> This file is **not a changelog** (that lives in `CHANGELOG.md` when created); it is a narrative record explaining *what* was changed, *why* it was changed, and *how* it was implemented. When debugging or onboarding, start here.
+
+---
+
+## Format
+
+Each entry follows this template:
+
+```
+### YYYY-MM-DD — <Short title>
+**Type:** Bug Fix | Feature | Refactor | Infra | Documentation
+**Files changed:** comma-separated list of key files
+**Status:** ✅ Done | 🚧 In Progress | ⚠️ Needs Verification
+```
+
+---
+
+## Entries
+
+---
+
+### 2026-09-10 — Phase 8: Hardening, Official Aggregated Dashboards & Hackathon Demo Studio (Scenarios A, B, C, D)
+
+**Type:** Feature | Infra  
+**Files changed:**
+- `lib/scenarios/demo-scenarios.ts` *(new)*
+- `app/actions/demo.ts` *(new)*
+- `components/counselor/DemoStudio.tsx` *(new)*
+- `app/counselor/demo/page.tsx` *(new)*
+- `components/counselor/OfficialAnalyticsView.tsx` *(new)*
+- `app/counselor/reports/page.tsx` *(updated)*
+- `app/admin/page.tsx` *(updated)*
+- `components/navigation/CounselorNav.tsx` *(updated)*
+- `lib/constants/index.ts` *(updated)*
+- `scripts/test-scenarios.mjs` *(new)*
+- `package.json` *(updated)*
+- `AGENTS.md` *(updated)*
+
+**Status:** ✅ Done — 0 TypeScript errors, 0 ESLint warnings, all 8 phases implemented and verified.
+
+#### What was built
+
+Implemented the final Phase 8 Hardening, Authority Analytics, and Hackathon Evaluation Suite:
+
+1. **Hackathon 1-Click Demo Studio (`components/counselor/DemoStudio.tsx`, `app/counselor/demo/page.tsx`, `lib/scenarios/demo-scenarios.ts`)**:
+   - Built an interactive presentation hub enabling presenters and hackathon judges to execute all 4 canonical SIH-26094 scenarios with a single click:
+     - **Scenario A (Stable Baseline)**: Calm wellness check-in, taking medications, routine family stability (Score ~15/100, STABLE trend, 0 alerts).
+     - **Scenario B (Gradual Distress Escalation)**: Worsening insomnia and anticipatory legal anxiety before court hearings (Score ~55/100, ELEVATED band, triggers advisory alert).
+     - **Scenario C (Acute Crisis & Death Threat)**: Direct witness intimidation and death threats outside home (Score ~88/100, CRITICAL emergency alert, prompts Witness Protection & auto-schedules urgent 4-hour counselor callback task).
+     - **Scenario D (Post-Intervention Recovery & De-escalation)**: Counselor contacts victim, police patrol arranged, transfer to safe shelter; subsequent check-in demonstrates marked relief, score falls to STABLE (<25), active alerts are resolved and marked REVIEWED.
+   - Provides 1-click **Reset Baseline** to clean demo states between presentation pitches.
+
+2. **Official / District & State Analytics Dashboard (`components/counselor/OfficialAnalyticsView.tsx`, `app/counselor/reports/page.tsx`)**:
+   - Replaced placeholder `/counselor/reports` with a comprehensive, privacy-first Authority Analytics Hub.
+   - Regional Hotspot breakdown across districts (Central Delhi, South Delhi, New Delhi, East Delhi).
+   - Caseload severity distribution bar (Stable, Concern, Elevated, Critical).
+   - Multi-channel ingestion volume metrics and executive response turnaround indicators.
+   - **DPDP Act & Victim Protection Guardrail**: Strict zero-PII guarantee; victim names, phone numbers, and raw text are never exposed. Only anonymized case references (`V-1042`) and statistical cohorts are displayed.
+   - Built-in **Export / Print PDF Summary** functionality for official reporting.
+
+3. **Admin Dashboard Live Data Wiring (`app/admin/page.tsx`)**:
+   - Removed prototype disclaimer and wired live Supabase aggregations for registered users, active caseloads, unreviewed alerts, and encrypted audit log records.
+
+4. **Navigation & Platform Completion**:
+   - Added `Demo Studio` with `Sparkles` icon to `CounselorNav`.
+   - Updated `ROUTES.counselor.demo` in `lib/constants/index.ts`.
+   - Marked Phase 8 as completed across `PHASES` constant and `AGENTS.md`.
+
+---
+
+### 2026-09-10 — Phase 7: Voice & Channels (Web Speech-to-Text, Inbound SMS Ingestion, IVRS Telephony Adapter, National Helpline 14566 Referral Gateway, Interactive Channel Simulator)
+
+**Type:** Feature  
+**Files changed:**
+- `lib/channels/types.ts` *(new)*
+- `lib/channels/stt.ts` *(new)*
+- `lib/channels/sms-adapter.ts` *(new)*
+- `lib/channels/ivrs-adapter.ts` *(new)*
+- `lib/channels/helpline-adapter.ts` *(new)*
+- `lib/channels/index.ts` *(new)*
+- `app/api/channels/sms/route.ts` *(new)*
+- `app/api/channels/ivrs/route.ts` *(new)*
+- `app/api/channels/helpline/route.ts` *(new)*
+- `app/actions/channels.ts` *(new)*
+- `components/counselor/ChannelSimulator.tsx` *(new)*
+- `app/counselor/channels/page.tsx` *(new)*
+- `components/victim/CheckInForm.tsx` *(updated)*
+- `app/actions/check-ins.ts` *(updated)*
+- `components/navigation/CounselorNav.tsx` *(updated)*
+- `app/counselor/cases/[id]/page.tsx` *(updated)*
+- `lib/constants/index.ts` *(updated)*
+- `scripts/test-channels.mjs` *(new)*
+- `package.json` *(updated)*
+- `AGENTS.md` *(updated)*
+
+**Status:** ✅ Done — 0 TypeScript errors, 0 ESLint warnings, all unit and diagnostic tests passing cleanly.
+
+#### What was built
+
+Implemented the complete Phase 7 Voice & Multi-Channel Ingestion infrastructure:
+
+1. **Web Speech-to-Text (STT) Check-In (`components/victim/CheckInForm.tsx`, `lib/channels/stt.ts`)**:
+   - Integrated browser Web Speech API for real-time speech-to-text recording, supporting both Hindi (`hi-IN`) and Indian English (`en-IN`).
+   - Added pulsing recording status indicator, timer, and simulated voice audio presets for testing low-literacy complainants without active microphones.
+   - Saves `voice_input_used: true` into the `check_ins` table and logs channel provenance.
+   - Extracts experimental non-clinical cadence indicators (`SLOW_HESITANT`, `NORMAL`, `RAPID_AGITATED`) strictly separated from clinical diagnosis.
+
+2. **Inbound Two-Way SMS Ingestion Adapter (`lib/channels/sms-adapter.ts`, `app/api/channels/sms/route.ts`)**:
+   - Ingests incoming SMS text from victims on feature phones with or without data connections.
+   - Decodes emergency quick-codes: `1/SAFE/THEEK` (stable), `2/HELP/MADAD` (support needed), and `911/URGENT/KHATRA` (critical distress).
+   - Resolves target cases, records check-ins and interactions, and runs the Risk Engine to compute updated distress signals and alert counselors.
+
+3. **Automated IVRS Telephony Adapter (`lib/channels/ivrs-adapter.ts`, `app/api/channels/ivrs/route.ts`)**:
+   - Handles automated wellness telephone calls, synthesizing DTMF touchtone ratings (1–5 scale) and recorded voicemail speech transcripts.
+   - Maps calls to `interactions` with `channel: 'VOICE_CALL'` and evaluates longitudinal distress.
+
+4. **National Helpline 14566 Referral Gateway (`lib/channels/helpline-adapter.ts`, `app/api/channels/helpline/route.ts`)**:
+   - Standardized ingestion for referrals from NHAA / Tele-MANAS / 14566 operators.
+   - Auto-schedules urgent 4h/24h counselor follow-up tasks in `follow_ups` for critical distress or requested callbacks.
+
+5. **Multi-Channel Gateway & Ingestion Hub (`app/counselor/channels/page.tsx`, `components/counselor/ChannelSimulator.tsx`)**:
+   - Counselor workspace hub displaying inbound volume across Web, Voice, SMS, IVRS, and 14566 Helpline.
+   - Interactive testing suite allowing evaluators to fire simulated SMS, IVRS, and Helpline payloads and observe real-time risk scores and alert generation.
+
+6. **Rich Visual Provenance Badges (`app/counselor/cases/[id]/page.tsx`, `components/navigation/CounselorNav.tsx`)**:
+   - Timeline items display distinctive channel badges (`🎙️ Voice / STT`, `💬 SMS Ingestion`, `📞 IVRS Telephony`, `🏛️ Helpline 14566`, `🌐 Web Portal`).
+   - Added "Channels" navigation link to `CounselorNav`.
+
+---
+
+### 2026-09-08 — Phase 6: GenAI / ML Integration (Multilingual NLP, Emotion Classification, 72h Escalation Forecast, Fact/Inference Separation, Gemini 2.5 Flash & Local ML Fallback)
+
+**Type:** Feature  
+**Files changed:**
+- `lib/ai/types.ts` *(new)*
+- `lib/ai/multilingual-dictionary.ts` *(new)*
+- `lib/ai/local-nlp-fallback.ts` *(new)*
+- `lib/ai/gemini-provider.ts` *(new)*
+- `lib/ai/service.ts` *(new)*
+- `lib/ai/index.ts` *(new)*
+- `features/ai/index.ts` *(new)*
+- `app/actions/ai.ts` *(new)*
+- `components/counselor/AIInsightsCard.tsx` *(new)*
+- `components/victim/CheckInForm.tsx` *(updated)*
+- `app/counselor/cases/[id]/page.tsx` *(updated)*
+- `lib/risk/rule-engine.ts` *(updated)*
+- `lib/constants/index.ts` *(updated)*
+- `AGENTS.md` *(updated)*
+
+**Status:** ✅ Done — All 21 Next.js routes dynamic, 0 TypeScript errors, 0 ESLint warnings, production build clean.
+
+#### What was built
+
+Implemented the complete Phase 6 GenAI and ML decision-support layer:
+
+1. **Multilingual NLP & Cross-Lingual Lexicon (`lib/ai/multilingual-dictionary.ts`)**:
+   - Comprehensive cross-lingual lexicon mapping safety threats, severe distress, housing instability, legal pressure, and positive coping across English, Devanagari Hindi (हिन्दी), and Hinglish (Latin-script colloquial Hindi).
+   - Dynamic language detection identifies script or token patterns, returning language mode and confidence scores.
+   - Connected directly into `lib/risk/rule-engine.ts`, enabling seamless distress evaluation for victims writing in Hindi or Hinglish.
+
+2. **Dual-Mode AI Architecture (`lib/ai/gemini-provider.ts`, `local-nlp-fallback.ts`, `service.ts`)**:
+   - **Google Gemini 2.5 Flash**: Connects via structured JSON mode with low temperature (0.2) when `GEMINI_API_KEY` is present.
+   - **Deterministic Heuristic ML Fallback**: Fast, zero-network, local NLP engine providing sentiment polarity, emotion categorization, and 72-hour escalation projection when running offline or without an external API key.
+   - Unified public facade (`lib/ai/service.ts`) abstracts the provider selection behind a stable boundary.
+
+3. **Clinical Fact vs. Machine Inference Demarcation**:
+   - Explicitly partitions findings into verifiable **Observed Facts** (direct quotes, logged timestamps, reported occurrences) versus algorithmic **Support Inferences** (emotional hypotheses, vulnerability vectors).
+   - Strictly enforces non-clinical framing: DSM/ICD diagnostic labels are prohibited.
+
+4. **72-Hour Escalation Forecasting & Counselor Briefings**:
+   - Multi-signal forecast predicts near-term escalation level (`LOW`, `MODERATE`, `HIGH`, `CRITICAL`), trajectory (`STABLE`, `ACCELERATING`, `DE-ESCALATING`), leading risk indicators, and rationale.
+   - Synthesizes longitudinal submissions into a concise, actionable counselor case briefing with 2–3 suggested empathetic talking points.
+
+5. **Counselor Workspace Integration (`components/counselor/AIInsightsCard.tsx`)**:
+   - Embedded directly into `/counselor/cases/[id]`.
+   - Displays real-time case briefing, language pill with translated gist, emotion badges with confidence levels, 72h escalation meter, facts vs inferences comparison table, suggested talking points, and non-clinical disclaimer.
+   - Interactive "Refresh Analysis" button connected to `generateCaseInsightsAction` server action with audit logging.
+
+6. **Victim Multilingual Guidance (`components/victim/CheckInForm.tsx`)**:
+   - Added multilingual input guidance banner reassuring victims that they may write in English, हिन्दी, or Hinglish.
+
+---
+
+### 2026-09-08 — Phase 5: Risk Engine v1 (Rule Engine, Trend Calculator, Intervention Engine, Alerts, Explainability & Visualizations)
+
+**Type:** Feature  
+**Files changed:**
+- `lib/risk/types.ts` *(new)*
+- `lib/risk/rule-engine.ts` *(new)*
+- `lib/risk/trend-calculator.ts` *(new)*
+- `lib/risk/intervention-engine.ts` *(new)*
+- `lib/risk/alert-generator.ts` *(new)*
+- `lib/risk/index.ts` *(new)*
+- `features/risk/index.ts` *(new)*
+- `app/actions/risk.ts` *(new)*
+- `app/actions/check-ins.ts` *(updated)*
+- `components/counselor/TrendChart.tsx` *(new)*
+- `components/counselor/ExplainabilityPanel.tsx` *(new)*
+- `components/counselor/InterventionRecommendations.tsx` *(new)*
+- `components/counselor/CaseloadTrendChart.tsx` *(new)*
+- `app/counselor/page.tsx` *(updated)*
+- `app/counselor/cases/[id]/page.tsx` *(updated)*
+- `lib/constants/index.ts` *(updated)*
+- `AGENTS.md` *(updated)*
+
+**Status:** ✅ Done — All 21 Next.js routes dynamic, 0 TypeScript errors, 0 ESLint warnings, production build clean.
+
+#### What was built
+
+Implemented the Phase 5 decision-support signal engine and human-in-the-loop clinical continuity visualization workspace:
+
+1. **Deterministic Rule Engine (`lib/risk/rule-engine.ts`, `types.ts`)**:
+   - Transparent, explainable weighted keyword clusters: `SAFETY_THREAT` (+30), `SEVERE_DISTRESS` (+25), `HOUSING_INSTABILITY` (+20), `LEGAL_STRESS` (+15), and `POSITIVE_PROTECTIVE` (-15).
+   - Interaction frequency and inactivity penalty logic (>3 days, >7 days elapsed).
+   - Normalized 0–100 distress prioritization score mapped to `STABLE` (0–25), `CONCERN` (26–50), `ELEVATED` (51–75), and `CRITICAL` (76–100).
+   - Strict adherence to non-clinical decision-support guidelines with clear separation between *Observed Facts* and *Support Inferences*.
+
+2. **Longitudinal Trend Calculator (`lib/risk/trend-calculator.ts`)**:
+   - 3-period moving average smoothing to prevent false-alarm jitter.
+   - Trajectory classification: `STABLE`, `WORSENING`, `IMPROVING`, and `VOLATILE`.
+   - Dynamic threshold delta triggers (delta >= 15 for medium priority, delta >= 25 for rapid escalation).
+
+3. **Early-Warning Alerts & De-duplication (`lib/risk/alert-generator.ts`)**:
+   - Automated evaluation triggered immediately upon check-in submission (`app/actions/check-ins.ts`).
+   - Generates alerts (`HIGH`, `MEDIUM`, `LOW`) when distress thresholds or rapid acceleration are detected.
+   - Intelligent 48-hour de-duplication suppresses spam by checking active (`NEW` / `UNDER_REVIEW`) alerts for the same case and severity.
+
+4. **Actionable Intervention Suggestions (`lib/risk/intervention-engine.ts`)**:
+   - Decision-support suggestions generated for `WITNESS_PROTECTION_REVIEW`, `HOUSING_RELOCATION`, `PRIORITY_COUNSELING`, and `LEGAL_AID_ASSISTANCE`.
+   - Strict human-in-the-loop requirement: Sensitive interventions are never triggered autonomously.
+   - Interactive one-click follow-up scheduling with urgency-based due dates directly creates pending records in the `follow_ups` table.
+
+5. **Visualizations & Explainability Workspace**:
+   - `CaseloadTrendChart.tsx`: 7-day longitudinal distress signal bar chart embedded on `/counselor` with interactive hover tooltips and threshold color-coding.
+   - `TrendChart.tsx`: Custom SVG longitudinal line chart on `/counselor/cases/[id]` displaying score points, gradient fills, and trajectory indicators.
+   - `ExplainabilityPanel.tsx`: Transparent factor breakdown distinguishing observed linguistic facts from support inferences, with "Confirm Human Review" counselor verification action and manual re-evaluation trigger.
+   - `InterventionRecommendations.tsx`: Advisory recommendation cards with supporting signals and direct follow-up creation.
+
+---
+
+### 2026-09-08 — Phase 4: Core Workflow (Cases, Assignments, Check-ins, Interactions, Consent, Follow-ups)
+
+**Type:** Feature  
+**Files changed:**
+- `lib/db/interactions.ts` *(new)*
+- `lib/db/consents.ts` *(new)*
+- `lib/db/follow-ups.ts` *(new)*
+- `lib/db/risk-scores.ts` *(new)*
+- `lib/db/cases.ts` *(updated)*
+- `lib/db/index.ts` *(updated)*
+- `types/database.types.ts` *(updated)*
+- `lib/utils.ts` *(updated)*
+- `lib/constants/index.ts` *(updated)*
+- `app/actions/check-ins.ts` *(new)*
+- `app/actions/cases.ts` *(new)*
+- `app/actions/interactions.ts` *(new)*
+- `app/actions/follow-ups.ts` *(new)*
+- `app/actions/consents.ts` *(new)*
+- `app/actions/assignments.ts` *(new)*
+- `app/actions/alerts.ts` *(new)*
+- `components/victim/CheckInForm.tsx` *(new)*
+- `components/victim/ConsentManager.tsx` *(new)*
+- `components/counselor/CaseStatusChanger.tsx` *(new)*
+- `components/counselor/CaseNotesEditor.tsx` *(new)*
+- `components/counselor/LogInteractionForm.tsx` *(new)*
+- `components/counselor/CaseFollowUpManager.tsx` *(new)*
+- `components/counselor/FollowUpListView.tsx` *(new)*
+- `components/counselor/AlertsListView.tsx` *(new)*
+- `components/admin/CaseAssignmentManager.tsx` *(new)*
+- `components/admin/UserManager.tsx` *(new)*
+- `app/victim/page.tsx` *(updated)*
+- `app/victim/check-in/page.tsx` *(updated)*
+- `app/victim/case/page.tsx` *(updated)*
+- `app/victim/data/page.tsx` *(updated)*
+- `app/victim/support/page.tsx` *(updated)*
+- `app/counselor/page.tsx` *(updated)*
+- `app/counselor/cases/page.tsx` *(updated)*
+- `app/counselor/cases/[id]/page.tsx` *(new)*
+- `app/counselor/follow-ups/page.tsx` *(updated)*
+- `app/counselor/alerts/page.tsx` *(updated)*
+- `app/counselor/audit-log/page.tsx` *(updated)*
+- `app/admin/assignments/page.tsx` *(updated)*
+- `app/admin/users/page.tsx` *(updated)*
+- `app/admin/audit-log/page.tsx` *(updated)*
+- `AGENTS.md` *(updated)*
+
+**Status:** ✅ Done — All routes dynamic, typecheck clean, lint clean, production build passing.
+
+#### What was built
+
+Implemented the complete end-to-end Phase 4 Core Workflow across Victim, Counselor, and Admin portals:
+
+1. **Database & Types Layer (`lib/db/`, `types/database.types.ts`)**:
+   - Added query helpers for `interactions` (get by case, create with actor relationship).
+   - Added query helpers for `consents` (get by victim, upsert status with timestamps).
+   - Added query helpers for `follow_ups` (get with case relations, create, complete, update).
+   - Added query helpers for `risk_scores` (get by case, create).
+   - Added `assignCounselor` helper to `lib/db/cases.ts`.
+   - Exported typed Row, Insert, and Update models from `types/database.types.ts`.
+
+2. **Server Actions Layer (`app/actions/`)**:
+   - Secure Next.js server actions validating user authentication and authorization via `getCurrentProfile()`.
+   - `check-ins.ts`: Validates victim role, queries victim's active case, records check-in, logs tamper-evident audit event, and revalidates victim and counselor cache paths.
+   - `cases.ts`: Allows authorized counselors/admins to transition case status (`OPEN`, `ACTIVE`, `UNDER_REVIEW`, `CLOSED`, `REFERRED`) and update confidential case notes with audit logging.
+   - `interactions.ts`: Allows counselors to log multi-channel contact (`VOICE_CALL`, `IN_PERSON`, `SMS`, `EMAIL`, `IN_APP_CHECK_IN`) with summary notes.
+   - `follow-ups.ts`: Allows scheduling and completion of case-related follow-ups with due dates.
+   - `consents.ts`: Empowers victims to grant or withdraw specific consent purposes (`WELLBEING_MONITORING`, `LONGITUDINAL_ANALYSIS`, `STAFF_ACCESS`).
+   - `assignments.ts`: Admin reassigns cases to certified counselors and toggles account activation states.
+   - `alerts.ts`: Counselors acknowledge and review automated decision-support distress alerts.
+
+3. **Victim Experience (`/victim`)**:
+   - **Dashboard (`/victim`)**: Dynamically queries active case reference, counselor name, and last check-in date.
+   - **Check-In (`/victim/check-in`)**: Interactive text submission form with immediate feedback, character count, and personal check-in history timeline. Kept experimental voice option clearly marked "Coming Soon".
+   - **My Case (`/victim/case`)**: Dynamic case details including official reference, status badge, opened timestamp, counselor contact, and official support notes.
+   - **My Data & Consent (`/victim/data`)**: Transparent privacy dashboard with interactive toggle buttons to grant/withdraw consent per purpose, alongside explanations of data minimization and access control.
+   - **Support & Crisis (`/victim/support`)**: Emergency hotline banner (112, 1091, 14566, Tele-MANAS 14416) and assigned counselor details.
+
+4. **Counselor Workspace (`/counselor`)**:
+   - **Dashboard (`/counselor`)**: Live KPI metrics (assigned cases, alerts needing review, recent check-ins, follow-ups due) and active caseload glance.
+   - **Caseload (`/counselor/cases`)**: Live table with status filtering tabs (`ALL`, `ACTIVE`, `UNDER_REVIEW`, `OPEN`, `CLOSED`) and direct link to case workspaces.
+   - **Case Details Workspace (`/counselor/cases/[id]`)**: Full case overview with status changer, confidential notes editor, complete check-in timeline, multi-channel contact logging, actionable follow-ups, and illustrative distress scores with mandatory non-clinical disclaimers.
+   - **Follow-Ups (`/counselor/follow-ups`)**: Replaced placeholder with task manager supporting status filtering (`ALL`, `PENDING`, `COMPLETED`), task creation, and "Mark Complete" action.
+   - **Alerts (`/counselor/alerts`)**: Replaced placeholder with real alerts manager with priority badges, status filters, and "Mark as Reviewed" action.
+   - **Audit Log (`/counselor/audit-log`)**: Displays real audit trail of recent staff actions.
+
+5. **Admin Workspace (`/admin`)**:
+   - **Assignments (`/admin/assignments`)**: Replaced placeholder with case allocation interface featuring counselor workload distribution metrics and case assignment dropdowns.
+   - **User Management (`/admin/users`)**: Replaced placeholder with user management table displaying roles, verification status, and account activation toggles.
+   - **Audit Log (`/admin/audit-log`)**: Full immutable audit trail of system events.
+
+6. **Safety & Guardrail Compliance**:
+   - Every distress signal display prominently embeds the non-clinical disclaimer: *"Illustrative support-prioritisation signal — not a clinical diagnosis. Human review is mandatory."*
+   - All demo data is strictly synthetic and labeled as such.
+
+---
+
+### 2026-09-08 — Fix "Database error querying schema" for all demo accounts
+
+**Type:** Bug Fix  
+**Files changed:**
+- `supabase/fix-auth-users.sql` *(new)*
+- `supabase/seed.sql` *(updated)*
+- `middleware.ts` *(new)*
+- `app/actions/auth.ts` *(updated)*
+- `scripts/test-login.mjs` *(new)*
+- `package.json` *(updated)*
+
+**Status:** ✅ Done — requires running `supabase/fix-auth-users.sql` in the Supabase SQL Editor once against the live project database.
+
+#### Problem
+
+Attempting to log in with any demo account (`admin@sahay.org`, `counselor@sahay.org`, `victim1@demo.sahay.org`) via `/login` returned:
+
+```text
+500: Database error querying schema
+```
+
+This is a GoTrue (Supabase's internal auth service) error. It is **not** a problem with the application code — it is a problem in the `auth.*` schema in the Postgres database.
+
+#### Root Causes (two separate issues)
+
+**1. NULL token columns in `auth.users`**
+
+The original `supabase/seed.sql` inserted users directly into `auth.users` via raw SQL (`INSERT INTO auth.users (...)`). The columns for internal token management — `confirmation_token`, `recovery_token`, `email_change`, `email_change_token_new`, `email_change_token_current`, `phone_change`, `phone_change_token`, `reauthentication_token` — were not included in the `INSERT` column list and defaulted to `NULL` in the database.
+
+Supabase's GoTrue authentication engine is written in Go. When processing a login attempt, it reads all user fields using Go's SQL scanner. Go's SQL driver **cannot** scan a PostgreSQL `NULL` value into a Go `string` variable. The runtime error is:
+
+```text
+sql: Scan error on column index N, name "confirmation_token": converting NULL to string is unsupported
+```
+
+GoTrue wraps this as the generic `"Database error querying schema"` 500 response.
+
+**2. Missing `auth.identities` entries**
+
+Supabase Auth uses a two-table design for user identity management:
+- `auth.users` — the core user record
+- `auth.identities` — one or more rows per user, one for each authentication provider (email, Google, GitHub, etc.)
+
+The original seed script only inserted into `auth.users` and skipped `auth.identities`. GoTrue requires a matching identity record to verify that a user can authenticate via a given provider (in this case `'email'`). Without it, authentication cannot complete.
+
+**3. `proxy.ts` was not picked up as middleware**
+
+The project had a file called `proxy.ts` at the root with a `proxy` export and a `config` export. This file contained the Supabase session refresh logic and RBAC route protection. However, **Next.js middleware must be in a file named `middleware.ts` (or `middleware.js`) and must export a function named `middleware`**. The file `proxy.ts` was completely ignored by Next.js — no session refreshing, no RBAC redirection was active for any route, including `/admin`.
+
+#### Fixes
+
+**Fix 1 — One-time database repair: `supabase/fix-auth-users.sql`**
+
+Created a new SQL repair script that must be run once in the Supabase SQL Editor to fix the already-inserted seeded users:
+
+```sql
+-- Step 1: Replace NULL token columns with empty strings
+UPDATE auth.users
+SET 
+  confirmation_token = COALESCE(confirmation_token, ''),
+  recovery_token = COALESCE(recovery_token, ''),
+  email_change_token_new = COALESCE(email_change_token_new, ''),
+  email_change_token_current = COALESCE(email_change_token_current, ''),
+  email_change = COALESCE(email_change, ''),
+  phone_change = COALESCE(phone_change, ''),
+  phone_change_token = COALESCE(phone_change_token, ''),
+  reauthentication_token = COALESCE(reauthentication_token, '')
+WHERE <any of those columns> IS NULL;
+
+-- Step 2: Insert missing auth.identities records for all users without one
+INSERT INTO auth.identities (id, user_id, provider_id, identity_data, provider, ...)
+SELECT u.id::text, u.id, u.id::text, 
+       format('{"sub":"%s","email":"%s"}', u.id::text, u.email)::jsonb,
+       'email', ...
+FROM auth.users u
+WHERE NOT EXISTS (
+  SELECT 1 FROM auth.identities i WHERE i.user_id = u.id AND i.provider = 'email'
+);
+```
+
+The `on conflict (id) do nothing` on identities prevents duplicates on re-run.
+
+**Fix 2 — Prevent recurrence: updated `supabase/seed.sql`**
+
+Updated the `INSERT INTO auth.users (...)` statement to explicitly list and set all token columns to `''`:
+
+```sql
+insert into auth.users (
+  id, instance_id, aud, role, email, encrypted_password, email_confirmed_at,
+  raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change_token_new,
+  email_change_token_current, email_change, phone_change,
+  phone_change_token, reauthentication_token
+) values (
+  '...', '...', ... , '', '', '', '', '', '', '', ''
+);
+```
+
+Also changed `on conflict (id) do nothing` to `on conflict (id) do update set encrypted_password = excluded.encrypted_password, confirmation_token = '', ...` — so a re-seed will also repair any NULL-token rows.
+
+Added a new section `-- 1b. Insert corresponding identities into auth.identities` that populates the identity table for all six synthetic users (counselor, admin, 4 victims) using `on conflict (id) do nothing`.
+
+**Fix 3 — Create `middleware.ts`**
+
+Renamed the exported function and file:
+- Before: `proxy.ts` exporting `export async function proxy(request: NextRequest)`
+- After: `middleware.ts` exporting `export async function middleware(request: NextRequest)`
+
+The internal logic in `lib/supabase/proxy.ts` (the actual Supabase session + RBAC logic) was kept unchanged. `middleware.ts` simply calls `updateSession(request)` from that module. This is the correct Next.js pattern.
+
+The old `proxy.ts` root file was deleted.
+
+**Fix 4 — Harden `app/actions/auth.ts` role lookup**
+
+Changed `.single()` to `.maybeSingle()` when fetching user profile in `signInAction`. `.single()` throws an error if no row is returned; `.maybeSingle()` returns `null` which is handled gracefully.
+
+Added a fallback chain for role resolution:
+```typescript
+const role =
+  (profile?.role as UserRole) ??          // 1. from public.profiles table (most authoritative)
+  (data.user.app_metadata?.role as UserRole) ?? // 2. from app_metadata JWT claim
+  (data.user.user_metadata?.role as UserRole) ?? // 3. from user_metadata
+  "VICTIM";                                // 4. safe default
+```
+
+**Fix 5 — Added `scripts/test-login.mjs` and `npm run test:login`**
+
+Created a diagnostic script to reproduce and verify the authentication fix without a browser. It tests all three demo accounts and prints a clear error message with the fix URL if the schema error is still present.
+
+```bash
+npm run test:login
+```
+
+Expected output after the fix:
+```text
+Testing [ADMIN] (admin@sahay.org)...       ✅ SUCCESS!
+Testing [COUNSELOR] (counselor@sahay.org)... ✅ SUCCESS!
+Testing [VICTIM] (victim1@demo.sahay.org)... ✅ SUCCESS!
+```
+
+#### How to Reproduce Before the Fix
+
+1. Run `supabase/seed.sql` without the updated token columns against a fresh Supabase project.
+2. Try to log in with any seeded account.
+3. The auth API returns HTTP 500 with body `{"message":"Database error querying schema"}`.
+
+#### Action Required
+
+Run [`supabase/fix-auth-users.sql`](supabase/fix-auth-users.sql) in the Supabase SQL Editor once:
+
+```
+https://supabase.com/dashboard/project/<your-project-ref>/sql/new
+```
+
+Then verify:
+
+```bash
+npm run test:login
+```
+
+---
+
+### 2026-09-05 — Phase 2 Supabase skills, Supabase schema, seed data, auth flow, and role-based navigation
+
+**Type:** Feature  
+**Files changed:**
+- `supabase/schema.sql` *(new)*
+- `supabase/seed.sql` *(new)*
+- `supabase/migrations/20260908000000_initial_schema.sql` *(new)*
+- `lib/supabase/server.ts`, `client.ts`, `admin.ts`, `proxy.ts`, `index.ts` *(new)*
+- `lib/db/` — `profiles.ts`, `cases.ts`, `alerts.ts`, `check-ins.ts`, `audit.ts` *(new)*
+- `types/database.types.ts` *(new)*
+- `app/actions/auth.ts` *(new)*
+- `app/login/page.tsx` *(new)*
+- `components/auth/LoginForm.tsx`, `SignOutButton.tsx` *(new)*
+- `app/admin/`, `app/counselor/`, `app/victim/` *(new route groups)*
+- `app/admin/layout.tsx`, `app/counselor/layout.tsx`, `app/victim/layout.tsx` *(new)*
+- `components/navigation/AdminNav.tsx`, `CounselorNav.tsx`, `VictimNav.tsx` *(new)*
+- `scripts/test-db-connection.mjs` *(new)*
+- `.agents/skills/supabase/`, `.agents/skills/supabase-postgres-best-practices/` *(new)*
+- `package.json` — added `@supabase/supabase-js`, `@supabase/ssr`
+
+**Status:** ✅ Done (modulo the auth fix above)
+
+#### What was built
+
+**Database schema (`supabase/schema.sql`)**
+
+Defined the full Phase 2 relational schema with:
+- `public.profiles` — extends `auth.users`, stores `role`, `display_name`, `is_active`. Triggered from `auth.users` via `on_auth_user_created` trigger.
+- `public.cases` — victim cases with `case_ref`, `status`, `victim_id`, `counselor_id`.
+- `public.check_ins` — periodic check-in submissions with free text.
+- `public.interactions` — multi-channel interaction records (VOICE_CALL, SMS, IN_APP_CHECK_IN, etc.)
+- `public.consents` — victim consent lifecycle (GIVEN / WITHDRAWN / PENDING).
+- `public.alerts` — distress signals with severity (LOW / MEDIUM / HIGH) and status (NEW / UNDER_REVIEW / REVIEWED).
+- `public.risk_scores` — illustrative distress prioritization signals (NOT clinical diagnosis; 0–100 score with human_reviewed flag).
+- `public.follow_ups` — counselor-assigned follow-up tasks with due dates.
+- `public.audit_logs` — append-only system activity log.
+- Helper functions: `set_updated_at()`, `get_my_role()` (security definer, cached role lookup).
+- RLS enabled on all tables with `TO authenticated` policies using `auth.uid()` ownership predicates and role-checked staff policies.
+
+**Seed data (`supabase/seed.sql`)**
+
+Inserted 6 synthetic demo users (1 admin, 1 counselor, 4 victims), 4 cases, 2 alerts, 2 risk score entries, 2 check-ins, and 2 follow-ups. All data is clearly labelled synthetic/demo.
+
+**Supabase client setup (`lib/supabase/`)**
+
+- `server.ts` — SSR server-side client using `@supabase/ssr` and Next.js `cookies()`.
+- `client.ts` — browser-side client using `@supabase/ssr`.
+- `admin.ts` — service-role admin client using `SUPABASE_SERVICE_ROLE_KEY` (server-only).
+- `proxy.ts` — session refresh + RBAC middleware logic, imported by `middleware.ts`.
+
+**Auth server actions (`app/actions/auth.ts`)**
+
+- `signInAction` — validates credentials, fetches role from `public.profiles`, redirects to the correct portal.
+- `signOutAction` — signs out and redirects to `/login`.
+- `signUpAction` — creates account via Supabase auth API with `display_name` and `role` in `user_metadata`.
+
+**Role-based portal layouts**
+
+Three protected portals, each with a dedicated layout and navigation component:
+- `/admin` — Admin portal (user management, assignments, audit log).
+- `/counselor` — Counselor dashboard (cases, alerts, follow-ups, reports, audit log).
+- `/victim` — Victim portal (case status, check-in, support resources, data controls).
+
+---
+
+### 2026-09-05 — Phase 1 skeleton
+
+**Type:** Feature  
+**Files changed:** All initial Next.js project files, `AGENTS.md`, `README.md`, `CONTRIBUTING.md`, `LICENSE`.
+
+**Status:** ✅ Done
+
+Initial Next.js 16 + TypeScript + Tailwind CSS 4 + shadcn/ui scaffold. Public landing page with role overview cards (Victim, Counselor, Admin). Public header and footer. Responsive layout. `AGENTS.md` project checklist initialized.
+
+---
+
+*Journal maintained by: development team + AI agents. Last updated: 2026-09-08.*

@@ -1,79 +1,94 @@
 /**
- * /victim/check-in — Well-being check-in UI shell.
- *
- * UI only. NLP / voice processing is NOT implemented.
- * Voice option is disabled and clearly marked Coming Soon.
+ * /victim/check-in — Well-being check-in workflow.
  */
 
 import type { Metadata } from "next";
 import { ComingSoon } from "@/components/coming-soon";
+import { CheckInForm } from "@/components/victim/CheckInForm";
+import { getCurrentProfile } from "@/lib/db/profiles";
+import { getCheckInsByVictimId } from "@/lib/db/check-ins";
+import { formatDate } from "@/lib/utils";
+import { History, Mic } from "lucide-react";
 
-export const metadata: Metadata = { title: "Check-In" };
+export const metadata: Metadata = { title: "Daily Check-In" };
 
-export default function VictimCheckInPage() {
+export default async function VictimCheckInPage() {
+  const profile = await getCurrentProfile();
+  let pastCheckIns: Array<{
+    id: string;
+    response_text: string | null;
+    submitted_at: string;
+    voice_input_used: boolean;
+  }> = [];
+
+  if (profile) {
+    try {
+      const data = await getCheckInsByVictimId(profile.id);
+      pastCheckIns = data || [];
+    } catch (e) {
+      console.error("Error fetching victim check-in history:", e);
+    }
+  }
+
   return (
-    <div className="sahay-container max-w-xl py-10">
-      <h1 className="text-2xl font-semibold text-foreground">
-        Today&rsquo;s Check-In
-      </h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Your response is private and is only used to help your support worker
-        understand how best to support you.
-      </p>
-
-      <div className="mt-8 rounded-lg border border-border bg-card p-6 shadow-sm">
-        <label
-          htmlFor="check-in-text"
-          className="block text-sm font-medium text-foreground"
-        >
-          How are you feeling today?
-        </label>
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          Write as much or as little as you like.
+    <div className="sahay-container max-w-2xl py-10">
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-foreground">Today&rsquo;s Check-In</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Your responses are private and help your support worker understand your emotional well-being over time.
         </p>
-
-        <textarea
-          id="check-in-text"
-          name="check-in-text"
-          rows={5}
-          placeholder="You can write anything here…"
-          className="mt-3 w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-          aria-describedby="check-in-note"
-        />
-
-        <p id="check-in-note" className="mt-1.5 text-xs text-muted-foreground">
-          Your response will not be shared without your knowledge.
-        </p>
-
-        <div className="mt-5 flex items-center gap-3">
-          {/* Continue button — wired in future phase */}
-          <button
-            type="button"
-            disabled
-            aria-disabled="true"
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground opacity-50 cursor-not-allowed"
-          >
-            Continue
-          </button>
-          <span className="text-xs text-muted-foreground">
-            (Submission not yet connected — Phase 5)
-          </span>
-        </div>
       </div>
 
-      {/* Voice option — Coming Soon */}
-      <div className="mt-6 rounded-lg border border-border bg-secondary/50 p-5">
-        <p className="text-sm font-medium text-foreground">Voice Check-In</p>
+      {/* Main interactive form */}
+      <CheckInForm />
+
+      {/* Voice check-in notice */}
+      <div className="mt-6 rounded-lg border border-border bg-secondary/40 p-5">
+        <div className="flex items-center gap-2 font-medium text-foreground text-sm">
+          <Mic className="h-4 w-4 text-primary" /> Voice Check-In Option
+        </div>
         <p className="mt-1 text-xs text-muted-foreground">
           Speak your check-in instead of typing.
         </p>
         <div className="mt-3">
           <ComingSoon
-            title="Voice Input — Coming Soon"
-            description="Voice check-in will be available in a future phase. Please use the text option above."
-            plannedPhase="Phase 8 — Voice + Notifications"
+            title="Voice Check-In — In Development"
+            description="Voice transcription and stress signal research are scheduled for Phase 7–8. Please use the secure text input above."
+            plannedPhase="Phase 7–8 — Voice & Multi-channel"
           />
         </div>
+      </div>
+
+      {/* Check-in History */}
+      <div className="mt-8 rounded-lg border border-border bg-card p-6 shadow-sm">
+        <div className="flex items-center gap-2 text-base font-semibold text-foreground mb-4">
+          <History className="h-5 w-5 text-primary" />
+          <span>Your Recent Check-Ins</span>
+        </div>
+
+        {pastCheckIns.length === 0 ? (
+          <p className="text-sm text-muted-foreground italic">
+            You have not submitted any check-ins yet. Submitting your first check-in will help your support team provide timely care.
+          </p>
+        ) : (
+          <div className="divide-y divide-border">
+            {pastCheckIns.map((ci) => (
+              <div key={ci.id} className="py-3.5 first:pt-0 last:pb-0">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                  <span>{formatDate(ci.submitted_at)}</span>
+                  {ci.voice_input_used && (
+                    <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium">
+                      Voice input
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-foreground whitespace-pre-wrap">
+                  {ci.response_text || "(No text provided)"}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

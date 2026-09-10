@@ -1,1 +1,3 @@
-// features/counselor feature module — Phase 1 skeleton stub\n// Add feature-specific components, hooks, and server actions here.\nexport {};
+// features/counselor feature module
+export * from "@/lib/db/cases";
+export * from "@/lib/db/alerts";

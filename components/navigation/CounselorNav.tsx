@@ -11,6 +11,8 @@ import {
   LayoutDashboard,
   FolderOpen,
   Bell,
+  Radio,
+  Sparkles,
   CalendarCheck,
   FileText,
   ClipboardList,
@@ -20,13 +22,17 @@ import {
 import { ROUTES, APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
+import { SignOutButton } from "@/components/auth/SignOutButton";
+
 const NAV_ITEMS = [
-  { href: ROUTES.counselor.root,      label: "Dashboard",  icon: LayoutDashboard },
-  { href: ROUTES.counselor.cases,     label: "Cases",      icon: FolderOpen      },
-  { href: ROUTES.counselor.alerts,    label: "Alerts",     icon: Bell            },
-  { href: ROUTES.counselor.followUps, label: "Follow-ups", icon: CalendarCheck   },
-  { href: ROUTES.counselor.reports,   label: "Reports",    icon: FileText        },
-  { href: ROUTES.counselor.auditLog,  label: "Audit Log",  icon: ClipboardList   },
+  { href: ROUTES.counselor.root,      label: "Dashboard",   icon: LayoutDashboard },
+  { href: ROUTES.counselor.cases,     label: "Cases",       icon: FolderOpen      },
+  { href: ROUTES.counselor.alerts,    label: "Alerts",      icon: Bell            },
+  { href: ROUTES.counselor.channels,  label: "Channels",    icon: Radio           },
+  { href: ROUTES.counselor.demo,      label: "Demo Studio", icon: Sparkles        },
+  { href: ROUTES.counselor.followUps, label: "Follow-ups",  icon: CalendarCheck   },
+  { href: ROUTES.counselor.reports,   label: "Reports",     icon: FileText        },
+  { href: ROUTES.counselor.auditLog,  label: "Audit Log",   icon: ClipboardList   },
 ] as const;
 
 const BOTTOM_ITEMS = [
@@ -90,6 +96,9 @@ export function CounselorNav() {
               </Link>
             </li>
           ))}
+          <li className="pt-2 border-t border-sidebar-border/60">
+            <SignOutButton className="w-full rounded-md px-3 py-2 text-sidebar-foreground/60 hover:bg-destructive/10 hover:text-destructive" />
+          </li>
         </ul>
       </div>
     </aside>

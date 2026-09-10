@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:db": "node scripts/test-db-connection.mjs",
+    "test:login": "node scripts/test-login.mjs",
+    "test:channels": "node scripts/test-channels.mjs",
+    "test:scenarios": "node scripts/test-scenarios.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

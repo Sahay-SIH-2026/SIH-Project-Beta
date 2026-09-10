@@ -9,28 +9,32 @@ export const APP_DESCRIPTION =
   "A human-centered platform that helps authorized support workers identify changing support needs over time." as const;
 
 /** The current development phase */
-export const CURRENT_PHASE = 1 as const;
-export const CURRENT_PHASE_LABEL = "Phase 1 — Skeleton" as const;
+export const CURRENT_PHASE = 6 as const;
+export const CURRENT_PHASE_LABEL = "Phase 6 — GenAI / ML" as const;
 
 /**
  * Planned development phases.
  * Update as phases are completed.
  */
 export const PHASES = [
-  { phase: 1, label: "Skeleton",                  status: "current"   },
-  { phase: 2, label: "Database",                  status: "upcoming"  },
-  { phase: 3, label: "Authentication + RBAC",     status: "upcoming"  },
-  { phase: 4, label: "API",                        status: "upcoming"  },
-  { phase: 5, label: "Core UI",                    status: "upcoming"  },
-  { phase: 6, label: "Risk Engine",                status: "upcoming"  },
-  { phase: 7, label: "ML Integration",             status: "upcoming"  },
-  { phase: 8, label: "Voice + Notifications",     status: "upcoming"  },
+  { phase: 1, label: "Skeleton",                  status: "completed" },
+  { phase: 2, label: "Database",                  status: "completed" },
+  { phase: 3, label: "Authentication + RBAC",     status: "completed" },
+  { phase: 4, label: "Core Workflow",             status: "completed" },
+  { phase: 5, label: "Risk Engine v1",            status: "completed" },
+  { phase: 6, label: "GenAI / ML Integration",    status: "completed" },
+  { phase: 7, label: "Voice & Channels",          status: "completed" },
+  { phase: 8, label: "Hardening & Evaluation",    status: "completed" },
 ] as const;
+
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 export const ROUTES = {
   home: "/",
+  auth: {
+    login: "/login",
+  },
 
   victim: {
     root:    "/victim",
@@ -44,6 +48,8 @@ export const ROUTES = {
     root:     "/counselor",
     cases:    "/counselor/cases",
     alerts:   "/counselor/alerts",
+    channels: "/counselor/channels",
+    demo:     "/counselor/demo",
     followUps:"/counselor/follow-ups",
     reports:  "/counselor/reports",
     auditLog: "/counselor/audit-log",

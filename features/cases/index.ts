@@ -1,1 +1,2 @@
-// features/cases feature module — Phase 1 skeleton stub\n// Add feature-specific components, hooks, and server actions here.\nexport {};
+// features/cases feature module
+export * from "@/lib/db/cases";
