@@ -73,3 +73,11 @@ export async function updateFollowUp(id: string, updates: FollowUpUpdate) {
   if (error) throw error;
   return data;
 }
+
+export async function updateFollowUpStatus(id: string, status: FollowUpStatus) {
+  const updates: FollowUpUpdate = {
+    status,
+    completed_at: status === "COMPLETED" ? new Date().toISOString() : null,
+  };
+  return updateFollowUp(id, updates);
+}

@@ -11,6 +11,7 @@ import type {
   SuggestedIntervention,
   TrendDirection,
 } from "./types";
+import { MULTILINGUAL_LEXICON } from "@/lib/ai/multilingual-dictionary";
 
 interface RecommendationInput {
   score: number;
@@ -102,4 +103,48 @@ export function generateInterventions(
   }
 
   return recommendations;
+}
+
+export function suggestInterventions(params: {
+  distressScore: number;
+  recentText?: string;
+  trendTrajectory?: TrendDirection;
+}): SuggestedIntervention[] {
+  const { distressScore, recentText = "", trendTrajectory = "STABLE" } = params;
+  const level: DistressLevel =
+    distressScore >= 70
+      ? "CRITICAL"
+      : distressScore >= 50
+      ? "ELEVATED"
+      : distressScore >= 30
+      ? "CONCERN"
+      : "STABLE";
+
+  const factors: ContributingFactor[] = [];
+  const lower = recentText.toLowerCase();
+
+  for (const [key, category] of Object.entries(MULTILINGUAL_LEXICON)) {
+    const allWords = [
+      ...category.english,
+      ...category.hindi,
+      ...category.hinglish,
+    ];
+    if (allWords.some((w) => lower.includes(w.toLowerCase()))) {
+      factors.push({
+        id: `factor-${key.toLowerCase()}`,
+        category: key === "SAFETY_THREAT" ? "SAFETY" : "LINGUISTIC",
+        label: category.label,
+        description: `Linguistic marker detected: ${category.label}`,
+        type: "OBSERVED_FACT",
+        scoreContribution: category.weight,
+      });
+    }
+  }
+
+  return generateInterventions({
+    score: distressScore,
+    level,
+    factors,
+    trendDirection: trendTrajectory,
+  });
 }

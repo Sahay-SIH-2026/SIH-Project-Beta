@@ -57,3 +57,18 @@ export function calculateTrend(
     movingAverage,
   };
 }
+
+export function calculateLongitudinalTrend(
+  scores: Array<{ score: number; timestamp?: string }>
+): TrendAnalysis {
+  if (!scores || scores.length === 0) {
+    return {
+      direction: "STABLE",
+      delta: 0,
+      movingAverage: 0,
+    };
+  }
+  const current = scores[0].score;
+  const previous = scores.slice(1).map((s) => s.score);
+  return calculateTrend(previous, current);
+}

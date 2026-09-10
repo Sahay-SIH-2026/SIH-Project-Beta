@@ -84,3 +84,9 @@ export async function assignCounselor(caseId: string, counselorId: string | null
   return updateCase(caseId, { counselor_id: counselorId });
 }
 
+export const assignCase = assignCounselor;
+
+export async function updateCaseStatus(caseId: string, status: CaseStatus) {
+  return updateCase(caseId, { status });
+}
+

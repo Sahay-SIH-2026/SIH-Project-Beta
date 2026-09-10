@@ -58,3 +58,31 @@ export async function createAlert(data: AlertInsert) {
   if (error) throw error;
   return newAlert;
 }
+
+export async function updateAlertStatus(
+  id: string,
+  status: AlertStatus,
+  reviewedById?: string
+) {
+  const supabase = await createServerClient();
+  const updateData: {
+    status: AlertStatus;
+    reviewed_at?: string;
+    reviewed_by_id?: string;
+  } = { status };
+
+  if (reviewedById) {
+    updateData.reviewed_by_id = reviewedById;
+    updateData.reviewed_at = new Date().toISOString();
+  }
+
+  const { data, error } = await supabase
+    .from("alerts")
+    .update(updateData)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}

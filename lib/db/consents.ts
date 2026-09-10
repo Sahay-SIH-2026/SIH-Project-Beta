@@ -66,3 +66,21 @@ export async function upsertConsent(
   if (error) throw error;
   return data;
 }
+
+export async function updateConsentStatus(id: string, status: ConsentStatus) {
+  const supabase = await createServerClient();
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("consents")
+    .update({
+      status,
+      granted_at: status === "GIVEN" ? now : undefined,
+      withdrawn_at: status === "WITHDRAWN" ? now : undefined,
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}

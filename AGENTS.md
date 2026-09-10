@@ -279,19 +279,19 @@ Database:
 
 ## 15. Backend / API
 - [x] Health endpoint. *(`/api/health`)*
-- [ ] User APIs.
-- [ ] Case APIs.
-- [ ] Assignment APIs.
-- [ ] Check-in APIs.
-- [ ] Interaction APIs.
-- [ ] Consent APIs.
-- [ ] Signal/risk APIs.
-- [ ] Alert APIs.
-- [ ] Follow-up APIs.
-- [ ] Intervention APIs.
-- [ ] Dashboard/analytics APIs.
-- [ ] Audit-log APIs.
-- [ ] AI/ML service interface.
+- [x] User APIs. *(`/api/users` - profiles & role management)*
+- [x] Case APIs. *(`/api/cases`, `/api/cases/[id]` - case dossier & lifecycle)*
+- [x] Assignment APIs. *(`/api/assignments` - counselor workload & assignment)*
+- [x] Check-in APIs. *(`/api/check-ins` - ingestion & distress scoring bridge)*
+- [x] Interaction APIs. *(`/api/interactions` - multi-channel logging)*
+- [x] Consent APIs. *(`/api/consents` - DPDP consent ledger & status)*
+- [x] Signal/risk APIs. *(`/api/risk` - longitudinal risk & trend trajectory)*
+- [x] Alert APIs. *(`/api/alerts` - alert lifecycle & review status)*
+- [x] Follow-up APIs. *(`/api/follow-ups` - scheduling & completion)*
+- [x] Intervention APIs. *(`/api/interventions` - decision-support recommendations)*
+- [x] Dashboard/analytics APIs. *(`/api/analytics` - zero-PII district & caseload metrics)*
+- [x] Audit-log APIs. *(`/api/audit-log` - tamper-evident compliance audit trail)*
+- [x] AI/ML service interface. *(`/api/ai` - stable boundary for Gemini 2.5 Flash & local NLP/heuristic fallback)*
 
 Keep AI behind a stable service boundary:
 
@@ -338,6 +338,7 @@ For the MVP:
 - [x] `npm run test:db` — verifies all required tables exist in Supabase.
 - [x] `npm run test:login` — verifies all demo accounts can authenticate end-to-end.
 - [x] `npm run test:channels` — verifies voice STT cadence detection, SMS quickcodes, and IVRS call synthesis.
+- [x] `npm run test:api` — verifies contracts, payload validation, and stable boundaries for all 13 REST API modules.
 
 ### AI/ML
 - [ ] Evaluation dataset.
