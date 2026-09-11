@@ -19,6 +19,8 @@ import { TrendChart } from "@/components/counselor/TrendChart";
 import { ExplainabilityPanel } from "@/components/counselor/ExplainabilityPanel";
 import { InterventionRecommendations } from "@/components/counselor/InterventionRecommendations";
 import { AIInsightsCard } from "@/components/counselor/AIInsightsCard";
+import { RecordSessionStatement } from "@/components/counselor/RecordSessionStatement";
+import { CaseHistoryGraph } from "@/components/counselor/CaseHistoryGraph";
 import { generateCaseInsights } from "@/lib/ai/service";
 import type { AIInsightsResult } from "@/lib/ai/types";
 import { evaluateSignalRules } from "@/lib/risk/rule-engine";
@@ -55,13 +57,24 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
     response_text: string | null;
     submitted_at: string;
     voice_input_used: boolean;
+    distress_level?: string | null;
+    distress_score?: number | null;
+    immediate_danger?: boolean | null;
+    distress_signals?: string[] | null;
+    distress_reason?: string | null;
   }> = [];
+
   let interactions: Array<{
     id: string;
     channel: string;
     occurred_at: string;
     summary: string | null;
     recorder: { display_name: string } | null;
+    distress_level?: string | null;
+    distress_score?: number | null;
+    immediate_danger?: boolean | null;
+    distress_signals?: string[] | null;
+    distress_reason?: string | null;
   }> = [];
   let followUps: FollowUpRow[] = [];
   let riskScores: RiskScoreRow[] = [];
@@ -89,10 +102,8 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
   }
 
   let aiInsights: AIInsightsResult | null = null;
-  try {
-    aiInsights = await generateCaseInsights(id);
-  } catch (e) {
-    console.error("Error generating initial AI insights:", e);
+  if (caseItem && caseItem.latest_ai_insights) {
+    aiInsights = caseItem.latest_ai_insights as any as AIInsightsResult;
   }
 
   const victim = caseItem.victim as { id: string; display_name: string } | null;
@@ -173,6 +184,29 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Left Column (2 cols): Check-ins and Interactions */}
         <div className="space-y-6 lg:col-span-2">
+        
+          <CaseHistoryGraph data={[
+            ...checkIns
+              .filter((ci) => ci.distress_score !== null && ci.distress_score !== undefined)
+              .map((ci) => ({
+                id: ci.id,
+                distress_score: ci.distress_score as number,
+                distress_level: ci.distress_level as string,
+                submitted_at: ci.submitted_at,
+                type: "check_in" as const,
+              })),
+            ...interactions
+              .filter((inter) => inter.distress_score !== null && inter.distress_score !== undefined)
+              .map((inter) => ({
+                id: inter.id,
+                distress_score: inter.distress_score as number,
+                distress_level: inter.distress_level as string,
+                submitted_at: inter.occurred_at,
+                type: "interaction" as const,
+              })),
+          ]} />
+
+          <RecordSessionStatement caseId={caseItem.id} />
           {/* Check-In History */}
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
@@ -222,6 +256,48 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
                     <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
                       {ci.response_text || "(No response text provided)"}
                     </p>
+
+                    {ci.distress_level && (
+                      <div className="mt-3 rounded-md bg-background/50 border border-border p-3 space-y-2">
+                        <div className="flex items-center justify-between text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+                          <span className="flex items-center gap-1">AI Distress Analysis</span>
+                          {ci.immediate_danger && (
+                            <span className="text-red-600 bg-red-100 px-1.5 py-0.5 rounded border border-red-200 dark:bg-red-950/50 dark:border-red-900 flex items-center gap-1 animate-pulse">
+                              Immediate Danger Warning
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-muted-foreground mr-1">Level:</span>
+                            <span className={`font-semibold ${
+                              ci.distress_level.toLowerCase() === 'critical' || ci.distress_level.toLowerCase() === 'high' 
+                                ? 'text-red-600 dark:text-red-400' : ci.distress_level.toLowerCase() === 'moderate' 
+                                ? 'text-orange-600 dark:text-orange-400' : 'text-emerald-600 dark:text-emerald-400'
+                            }`}>{ci.distress_level.toUpperCase()}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground mr-1">Score:</span>
+                            <span className="font-mono font-medium">{ci.distress_score?.toFixed(2) || "N/A"}</span>
+                          </div>
+                        </div>
+
+                        {ci.distress_signals && ci.distress_signals.length > 0 && (
+                          <div className="text-xs">
+                            <span className="text-muted-foreground mr-1">Signals:</span>
+                            <span className="text-foreground">{ci.distress_signals.join(', ')}</span>
+                          </div>
+                        )}
+                        
+                        {ci.distress_reason && (
+                          <div className="text-xs mt-1">
+                            <span className="text-muted-foreground mr-1">Reason:</span>
+                            <span className="text-foreground italic">{ci.distress_reason}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

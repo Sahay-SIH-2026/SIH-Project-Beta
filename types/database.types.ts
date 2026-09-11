@@ -61,6 +61,8 @@ export interface Database {
           opened_at: string;
           updated_at: string;
           notes: string | null;
+          latest_ai_insights: any | null; // JSONB
+          insights_updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -71,6 +73,8 @@ export interface Database {
           opened_at?: string;
           updated_at?: string;
           notes?: string | null;
+          latest_ai_insights?: any | null;
+          insights_updated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -81,6 +85,8 @@ export interface Database {
           opened_at?: string;
           updated_at?: string;
           notes?: string | null;
+          latest_ai_insights?: any | null;
+          insights_updated_at?: string | null;
         };
         Relationships: [
           {
@@ -105,6 +111,11 @@ export interface Database {
           response_text: string | null;
           voice_input_used: boolean;
           submitted_at: string;
+          distress_level: string | null;
+          distress_score: number | null;
+          immediate_danger: boolean | null;
+          distress_signals: string[] | null;
+          distress_reason: string | null;
         };
         Insert: {
           id?: string;
@@ -113,6 +124,11 @@ export interface Database {
           response_text?: string | null;
           voice_input_used?: boolean;
           submitted_at?: string;
+          distress_level?: string | null;
+          distress_score?: number | null;
+          immediate_danger?: boolean | null;
+          distress_signals?: string[] | null;
+          distress_reason?: string | null;
         };
         Update: {
           id?: string;
@@ -121,6 +137,11 @@ export interface Database {
           response_text?: string | null;
           voice_input_used?: boolean;
           submitted_at?: string;
+          distress_level?: string | null;
+          distress_score?: number | null;
+          immediate_danger?: boolean | null;
+          distress_signals?: string[] | null;
+          distress_reason?: string | null;
         };
         Relationships: [
           {
@@ -145,6 +166,11 @@ export interface Database {
           occurred_at: string;
           summary: string | null;
           recorded_by_id: string;
+          distress_level: string | null;
+          distress_score: number | null;
+          immediate_danger: boolean | null;
+          distress_signals: string[] | null;
+          distress_reason: string | null;
         };
         Insert: {
           id?: string;
@@ -153,6 +179,11 @@ export interface Database {
           occurred_at?: string;
           summary?: string | null;
           recorded_by_id: string;
+          distress_level?: string | null;
+          distress_score?: number | null;
+          immediate_danger?: boolean | null;
+          distress_signals?: string[] | null;
+          distress_reason?: string | null;
         };
         Update: {
           id?: string;
@@ -161,6 +192,11 @@ export interface Database {
           occurred_at?: string;
           summary?: string | null;
           recorded_by_id?: string;
+          distress_level?: string | null;
+          distress_score?: number | null;
+          immediate_danger?: boolean | null;
+          distress_signals?: string[] | null;
+          distress_reason?: string | null;
         };
         Relationships: [
           {

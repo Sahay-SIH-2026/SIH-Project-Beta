@@ -86,7 +86,7 @@ export default async function VictimHomePage() {
   if (profile) {
     try {
       const supabase = await createServerClient();
-      const [{ data: c }, { data: ci }, { data: fu }] = await Promise.all([
+      const [{ data: c }, { data: ci }] = await Promise.all([
         /* Case info — reused from before, now also selects updated_at */
         supabase
           .from("cases")
@@ -105,30 +105,28 @@ export default async function VictimHomePage() {
           .order("submitted_at", { ascending: false })
           .limit(1)
           .maybeSingle(),
-        /* Next pending follow-up (linked to any of the victim's cases) */
-        supabase
-          .from("follow_ups")
-          .select("id, title, due_date, description, case:cases!follow_ups_case_id_fkey(victim_id)")
-          .eq("status", "PENDING")
-          .order("due_date", { ascending: true })
-          .limit(10),
       ]);
 
       if (c) caseRecord = c as unknown as VictimCaseInfo;
       if (ci) latestCheckIn = ci;
 
-      // Filter follow-ups to those belonging to this victim's cases
-      if (fu && fu.length > 0) {
-        const victimFollowUp = fu.find((f: Record<string, unknown>) => {
-          const caseData = f.case as { victim_id: string } | null;
-          return caseData?.victim_id === profile.id;
-        });
-        if (victimFollowUp) {
+      // Filter follow-ups explicitly strictly bounded by the victim's case via RLS.
+      if (caseRecord) {
+        const { data: fu } = await supabase
+          .from("follow_ups")
+          .select("id, title, due_date, description")
+          .eq("case_id", caseRecord.id)
+          .eq("status", "PENDING")
+          .order("due_date", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+
+        if (fu) {
           nextFollowUp = {
-            id: victimFollowUp.id as string,
-            title: victimFollowUp.title as string,
-            due_date: victimFollowUp.due_date as string,
-            description: victimFollowUp.description as string | null,
+            id: fu.id as string,
+            title: fu.title as string,
+            due_date: fu.due_date as string,
+            description: fu.description as string | null,
           };
         }
       }

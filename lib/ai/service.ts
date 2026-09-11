@@ -6,7 +6,7 @@
 
 import { createServerClient } from "@/lib/supabase/server";
 import type { AIInsightsResult } from "./types";
-import { generateGeminiCaseInsights } from "./gemini-provider";
+import { generateCaseInsightsWithOllama } from "./ollama";
 import { evaluateSentimentAndEmotion } from "./local-nlp-fallback";
 import { detectLanguage } from "./multilingual-dictionary";
 
@@ -57,10 +57,19 @@ export async function generateCaseInsights(caseId: string): Promise<AIInsightsRe
 
   // 4. Fetch recent Risk Scores (up to 5 newest)
   const { data: scoresData } = await supabase
-    .from("risk_scores")
-    .select("score, computed_at, signal_reason")
+    .from("interactions")
+    .select("distress_score, occurred_at, distress_reason")
     .eq("case_id", caseId)
-    .order("computed_at", { ascending: false })
+    .not("distress_score", "is", null)
+    .order("occurred_at", { ascending: false })
+    .limit(5);
+    
+  const { data: ciScoresData } = await supabase
+    .from("check_ins")
+    .select("distress_score, submitted_at, distress_reason")
+    .eq("case_id", caseId)
+    .not("distress_score", "is", null)
+    .order("submitted_at", { ascending: false })
     .limit(5);
 
   const victimName = (caseItem.victim as { display_name?: string } | null)?.display_name;
@@ -72,13 +81,25 @@ export async function generateCaseInsights(caseId: string): Promise<AIInsightsRe
   const interactionSummaries = (interactionsData || [])
     .map((i) => `[${i.channel}]: ${i.summary || "No summary"}`);
 
-  const riskScores = scoresData || [];
+  // Combine interactions and check_ins scores chronologically for the AI to understand trajectory
+  const combinedScores = [
+    ...(scoresData || []).map(s => ({
+      score: s.distress_score as number,
+      computed_at: s.occurred_at,
+      signal_reason: s.distress_reason || "Interaction analyzed"
+    })),
+    ...(ciScoresData || []).map(c => ({
+      score: c.distress_score as number,
+      computed_at: c.submitted_at,
+      signal_reason: c.distress_reason || "Check-in analyzed"
+    }))
+  ].sort((a, b) => new Date(b.computed_at).getTime() - new Date(a.computed_at).getTime());
 
-  return generateGeminiCaseInsights({
+  return generateCaseInsightsWithOllama({
     caseRef: caseItem.case_ref,
     victimName,
     checkInTexts,
     interactionSummaries,
-    riskScores,
+    riskScores: combinedScores.slice(0, 5),
   });
 }

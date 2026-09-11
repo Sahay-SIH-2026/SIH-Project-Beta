@@ -1,11 +1,8 @@
-/**
- * LUMA Risk Engine — Public Facade
- */
-
 import { createServerClient } from "@/lib/supabase/server";
 import { evaluateSignalRules } from "./rule-engine";
 import { checkAndTriggerAlert } from "./alert-generator";
 import type { EvaluationResult } from "./types";
+import { analyzeCheckInWithOllama } from "../ai/ollama";
 
 export * from "./types";
 export * from "./rule-engine";
@@ -45,7 +42,7 @@ export async function evaluateCheckIn(
     daysSinceLastCheckIn = Math.max(1, Math.round((currDate - prevDate) / (1000 * 3600 * 24)));
   }
 
-  // 3. Evaluate rules
+  // 3. Evaluate baseline rules
   const result = evaluateSignalRules({
     currentText: text,
     previousScores,

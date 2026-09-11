@@ -4,6 +4,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/db/profiles";
 import { logAuditEvent } from "@/lib/db/audit";
 import { revalidatePath } from "next/cache";
+import { analyzeCheckInWithOllama } from "@/lib/ai/ollama";
 
 export interface CheckInActionState {
   error?: string;
@@ -51,7 +52,33 @@ export async function submitCheckInAction(
       };
     }
 
-    // Insert check-in record
+    // Call Ollama local distress integration (Feature extraction only)
+    const aiAnalysis = await analyzeCheckInWithOllama(responseText);
+
+    const extractedSignals = aiAnalysis?.signals || [];
+    const isImmediateDanger = aiAnalysis?.immediate_danger || false;
+
+    // Fetch previous check_ins to determine trend and disengagement penalty
+    const { data: previousCheckIns } = await supabase
+      .from("check_ins")
+      .select("distress_score, submitted_at")
+      .eq("case_id", caseRecord.id)
+      .not("distress_score", "is", null)
+      .order("submitted_at", { ascending: false });
+
+    const previousScores = (previousCheckIns || []).map(ci => ci.distress_score as number);
+    let daysSinceLast = 0;
+    if (previousCheckIns && previousCheckIns.length > 0) {
+      const lastCheckInMs = new Date(previousCheckIns[0].submitted_at).getTime();
+      daysSinceLast = (Date.now() - lastCheckInMs) / (1000 * 3600 * 24);
+    }
+
+    const { evaluateDeterministicRisk } = await import("@/lib/risk/formulas");
+    const riskEval = evaluateDeterministicRisk(extractedSignals, previousScores, daysSinceLast);
+
+    const calculatedLevel = riskEval.severity.toLowerCase();
+
+    // Insert check-in record alongside deterministic AI evaluation
     const { data: checkIn, error: checkInError } = await supabase
       .from("check_ins")
       .insert({
@@ -59,11 +86,19 @@ export async function submitCheckInAction(
         victim_id: profile.id,
         response_text: responseText,
         voice_input_used: voiceInputUsed,
+        distress_level: calculatedLevel,
+        distress_score: riskEval.score,
+        immediate_danger: isImmediateDanger,
+        distress_signals: extractedSignals,
+        distress_reason: aiAnalysis?.reason || null,
       })
       .select()
       .single();
 
-    if (checkInError) throw checkInError;
+    if (checkInError) {
+      console.error("Supabase check_ins insert error:", checkInError);
+      throw checkInError;
+    }
 
     // Log audit event
     await logAuditEvent({
@@ -75,12 +110,31 @@ export async function submitCheckInAction(
       metadata: { case_id: caseRecord.id, voice_input_used: voiceInputUsed },
     }).catch((e) => console.error("Audit log error:", e));
 
-    // Evaluate support signal and trend through Risk Engine
-    try {
-      const { evaluateCheckIn } = await import("@/lib/risk");
-      await evaluateCheckIn(caseRecord.id, responseText, profile.id);
-    } catch (riskErr) {
-      console.error("Risk evaluation hook error:", riskErr);
+    // If AI flagged critical danger or mathematical threshold crossed
+    if (calculatedLevel === "critical" || isImmediateDanger || riskEval.alertTriggered) {
+      try {
+        const { checkAndTriggerAlert } = await import("@/lib/risk/alert-generator");
+        
+        const detailedDescription = `[URGENT] CRITICAL DISTRESS DETECTED
+Query: "${responseText}"
+
+AI Analysis:
+- Level: ${calculatedLevel.toUpperCase()}
+- Score: ${riskEval.score}
+- Immediate Danger: ${isImmediateDanger ? 'YES' : 'NO'}
+- Signals: ${extractedSignals.join(', ') || 'None'}
+- Reason: ${aiAnalysis?.reason || 'Calculated mathematical trigger'}
+- Trend: ${riskEval.trajectory.direction} (Δ ${riskEval.trajectory.delta})`;
+
+        await checkAndTriggerAlert({
+          caseId: caseRecord.id,
+          severity: isImmediateDanger ? "HIGH" : (riskEval.alertSeverity || "MEDIUM"),
+          signalDescription: detailedDescription,
+          actorId: profile.id
+        });
+      } catch (alertErr) {
+        console.error("AI Alert trigger error:", alertErr);
+      }
     }
 
     revalidatePath("/victim");
