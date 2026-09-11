@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { VictimNav } from "@/components/navigation/VictimNav";
+import { VictimLoginToast } from "@/components/auth/VictimLoginToast";
 
 export const metadata: Metadata = {
   title: {
@@ -24,6 +25,7 @@ export default function VictimLayout({
       <VictimNav />
       {/* pb-16 accounts for mobile bottom nav bar */}
       <main className="flex-1 pb-16 sm:pb-0">{children}</main>
+      <VictimLoginToast />
     </div>
   );
 }

@@ -1,11 +1,25 @@
 /**
- * PublicHeader — lightweight header for public/landing pages.
+ * PublicHeader — lightweight header shared by public and victim portal layouts.
+ *
+ * Server component: checks the Supabase session server-side so the "Sign In"
+ * button is hidden for authenticated users without any client-side flash.
  */
 
 import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
+import { createServerClient } from "@/lib/supabase/server";
 
-export function PublicHeader() {
+export async function PublicHeader() {
+  /* Determine auth state server-side — no client JS, no flash */
+  let isAuthenticated = false;
+  try {
+    const supabase = await createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    isAuthenticated = !!user;
+  } catch {
+    /* If auth check fails, default to unauthenticated (show Sign In) */
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="luma-container flex h-14 items-center justify-between">
@@ -27,12 +41,14 @@ export function PublicHeader() {
           <span className="hidden sm:inline-block rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800">
             Prototype — Dev Build
           </span>
-          <Link
-            href="/login"
-            className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 no-underline shadow-xs"
-          >
-            Sign In
-          </Link>
+          {!isAuthenticated && (
+            <Link
+              href="/login"
+              className="rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 no-underline shadow-xs"
+            >
+              Sign In
+            </Link>
+          )}
         </nav>
       </div>
     </header>

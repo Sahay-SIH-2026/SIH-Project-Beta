@@ -24,6 +24,68 @@ Each entry follows this template:
 
 ---
 
+### 2026-09-11 — Emergency Warning Toast & Credentials Update
+**Type:** Feature | Bug Fix
+**Files changed:** `app/actions/auth.ts`, `components/auth/VictimLoginToast.tsx`, `components/auth/LoginForm.tsx`, `app/victim/layout.tsx`, `app/victim/support/page.tsx`
+**Status:** ✅ Done
+
+- Updated demo credentials on the login page from `luma.org` to `sahay.org`.
+- Moved the "Immediate Danger" warning from a static banner on `/victim/support` to a one-time toast notification (`sonner`) that is displayed only after a successful victim login.
+- Modified the Server Actions (`signInAction`, `signUpAction`) to append `?login=success` to the redirect URL only for victims.
+- Added `VictimLoginToast` client component to detect the query parameter, show the toast, and remove it immediately so it doesn't run on page reloads.
+
+### 2026-09-11 — Hide Sign In button on authenticated portals
+**Type:** Bug Fix
+**Files changed:** `components/layout/PublicHeader.tsx`
+**Status:** ✅ Done
+
+`PublicHeader` unconditionally rendered the "Sign In" link, so authenticated victims always saw it. Since the component is a server component, added a server-side `supabase.auth.getUser()` check and conditionally render the button only when unauthenticated. No client JS, no flash, no new dependencies.
+
+- `npx tsc --noEmit` — 0 errors
+- `npm run lint` — 0 warnings
+
+---
+
+### 2026-09-11 — Redesign victim dashboard as a support hub
+**Type:** Feature | UX
+**Files changed:** `app/victim/page.tsx`, `app/victim/loading.tsx`
+**Status:** ✅ Done — victim dashboard redesigned from static case-management view to warm, supportive, mobile-first hub.
+
+#### What changed
+
+Rewrote the `/victim` dashboard around a support-first experience instead of a case-management display. The new flow:
+
+1. **Welcome** — Personalized greeting ("Welcome back, Aarohi") with reassurance ("Your support is here whenever you need it.").
+2. **Primary Check-in CTA** — Visually dominant card asking "How are you doing today?" with warm gradient accent bar. Shows a different state ("Thanks for checking in") if the victim checked in within the last 12 hours.
+3. **Your Support** — Reframed from "Case Status" to a support-continuity framing with green "Support active" badge. Case ref and counselor shown as secondary metadata.
+4. **What Happens Next** — Displays the next pending follow-up (date + title) or a calm empty state ("Nothing scheduled right now").
+5. **Recent Update** — Shows when the case was last updated, hidden if no meaningful update exists.
+6. **Need Support?** — Always-visible secondary CTA linking to `/victim/support`.
+7. **Privacy & Consent** — Small footer reassurance with link to `/victim/data`.
+
+Desktop uses two-column layout for the Support Status and What Happens Next sections. Mobile stacks everything vertically.
+
+#### UX rationale
+
+The victim should feel "someone is here to support me" — not "I am being monitored by an AI system." All internal AI/risk/alert data is hidden from the victim. No risk scores, no clinical terminology, no surveillance language. Plain, short sentences with clear actions. Calm color palette (emerald/teal for status, primary blue for actions). Large touch targets for mobile.
+
+#### Data fetching
+
+Added a follow-ups query to the existing `Promise.all` in the server component. All queries remain server-side via `createServerClient()` with RLS. No new client components, APIs, or schema changes.
+
+#### Loading skeleton
+
+Rewrote `loading.tsx` with skeleton placeholders matching the new section layout (greeting, check-in card, two-column secondary, support card, privacy footer). Pure CSS `animate-pulse` — no client JavaScript.
+
+#### Validation
+
+- `npx tsc --noEmit` — 0 errors
+- `npm run lint` — 0 warnings
+- `npm run build` — exit code 0
+- Browser: Login as victim, verified all 7 sections render correctly, all navigation links work (`/victim/check-in`, `/victim/case`, `/victim/support`, `/victim/data`), no full-page reloads during navigation
+
+---
+
 ### 2026-09-11 — Disable Next.js development indicator
 **Type:** Performance | Configuration
 **Files changed:** `next.config.ts`, `JOURNAL.md`

@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 import { getCurrentProfile } from "@/lib/db/profiles";
 import { createServerClient } from "@/lib/supabase/server";
-import { Phone, HeartHandshake, UserCheck, AlertTriangle } from "lucide-react";
+import { Phone, HeartHandshake, UserCheck } from "lucide-react";
 
 
 
@@ -70,16 +70,6 @@ export default async function VictimSupportPage() {
         <h1 className="text-2xl font-semibold text-foreground">Support &amp; Resources</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Access your assigned support counselor contact and trusted 24/7 institutional helplines.
-        </p>
-      </div>
-
-      {/* Immediate Emergency Warning Banner */}
-      <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-5 text-red-900">
-        <div className="flex items-center gap-2 font-semibold text-base">
-          <AlertTriangle className="h-5 w-5 text-red-600" /> If You Are in Immediate Danger
-        </div>
-        <p className="mt-1.5 text-sm">
-          LUMA is a periodic well-being support platform, <strong>not an emergency dispatch service</strong>. If you are in immediate physical danger, call <strong>112</strong> or <strong>1091</strong> right away.
         </p>
       </div>
 

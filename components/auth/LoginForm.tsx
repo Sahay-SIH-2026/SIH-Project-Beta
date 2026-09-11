@@ -46,7 +46,7 @@ export function LoginForm() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="name@luma.org"
+                placeholder="name@sahay.org"
                 autoComplete="email"
                 required
                 className="pl-9"
@@ -77,15 +77,15 @@ export function LoginForm() {
           <div className="rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground space-y-1 border border-border/50">
             <p className="font-semibold text-foreground">Demo Accounts:</p>
             <p className="flex justify-between">
-              <span>Counselor: <code>counselor@luma.org</code></span>
+              <span>Counselor: <code>counselor@sahay.org</code></span>
               <span className="font-mono text-muted-foreground/80">Password123!</span>
             </p>
             <p className="flex justify-between">
-              <span>Admin: <code>admin@luma.org</code></span>
+              <span>Admin: <code>admin@sahay.org</code></span>
               <span className="font-mono text-muted-foreground/80">Password123!</span>
             </p>
             <p className="flex justify-between">
-              <span>Victim: <code>victim1@demo.luma.org</code></span>
+              <span>Victim: <code>victim1@demo.sahay.org</code></span>
               <span className="font-mono text-muted-foreground/80">Password123!</span>
             </p>
           </div>

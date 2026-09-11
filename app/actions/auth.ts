@@ -54,6 +54,8 @@ export async function signInAction(
     destination = ROUTES.counselor.root;
   } else if (role === "ADMIN") {
     destination = ROUTES.admin.root;
+  } else if (role === "VICTIM") {
+    destination = `${ROUTES.victim.root}?login=success`;
   }
 
   redirect(destination);
@@ -97,7 +99,7 @@ export async function signUpAction(
 
   if (data.session) {
     // If auto-confirmed
-    redirect(role === "COUNSELOR" ? ROUTES.counselor.root : ROUTES.victim.root);
+    redirect(role === "COUNSELOR" ? ROUTES.counselor.root : (role === "VICTIM" ? `${ROUTES.victim.root}?login=success` : ROUTES.victim.root));
   }
 
   return {
