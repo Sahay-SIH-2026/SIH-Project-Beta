@@ -1,0 +1,10 @@
+﻿components/counselor/CaseloadTrendChart.tsx(12,8): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+components/counselor/CaseloadTrendChart.tsx(13,36): error TS2307: Cannot find module 'recharts/types/cartesian/Bar' or its corresponding type declarations.
+components/ui/chart.tsx(5,36): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+components/ui/chart.tsx(6,39): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+components/ui/chart.tsx(200,20): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/chart.tsx(201,17): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/chart.tsx(201,23): error TS7006: Parameter 'index' implicitly has an 'any' type.
+components/ui/chart.tsx(299,18): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/chart.tsx(300,15): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/chart.tsx(300,21): error TS7006: Parameter 'index' implicitly has an 'any' type.

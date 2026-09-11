@@ -8,6 +8,7 @@ import { UserManager } from "@/components/admin/UserManager";
 import { CreateCounselorForm } from "@/components/admin/CreateCounselorForm";
 import type { ProfileRow } from "@/types/database.types";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Users & Access" };
 
 export default async function AdminUsersPage() {

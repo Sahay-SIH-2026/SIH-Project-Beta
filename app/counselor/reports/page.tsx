@@ -4,6 +4,8 @@ import { OfficialAnalyticsView } from "@/components/counselor/OfficialAnalyticsV
 import { getCases } from "@/lib/db/cases";
 import { createServerClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Reports & District Analytics",
   description: "Aggregated district-level distress monitoring and case analytics for officials and counselors.",

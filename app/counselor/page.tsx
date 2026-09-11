@@ -4,12 +4,25 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import dynamicImport from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { ROUTES, DISTRESS_SIGNAL_DISCLAIMER } from "@/lib/constants";
 import { getCurrentProfile } from "@/lib/db/profiles";
 import { createServerClient } from "@/lib/supabase/server";
 
-import { CaseloadTrendChart } from "@/components/counselor/CaseloadTrendChart";
+export const dynamic = "force-dynamic";
+
+const CaseloadTrendChart = dynamicImport(
+  () =>
+    import("@/components/counselor/CaseloadTrendChart").then(
+      (mod) => mod.CaseloadTrendChart,
+    ),
+  {
+    loading: () => (
+      <div className="h-[250px] w-full animate-pulse rounded-lg bg-muted/40" />
+    ),
+  },
+);
 
 export const metadata: Metadata = { title: "Counselor Dashboard" };
 
