@@ -1,8 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import { DISTRESS_SIGNAL_DISCLAIMER } from "@/lib/constants";
 import { Activity, ShieldAlert } from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Rectangle,
+  XAxis,
+  YAxis,
+} from "recharts";
+import type { BarShapeProps } from "recharts/types/cartesian/Bar";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 interface DailySignal {
   day: string;
@@ -15,31 +29,27 @@ interface CaseloadTrendChartProps {
 }
 
 export function CaseloadTrendChart({ dailySignals }: CaseloadTrendChartProps) {
-  const [hoveredDay, setHoveredDay] = useState<DailySignal | null>(null);
+  const chartData = dailySignals.map((signal) => ({
+    ...signal,
+    fill:
+      signal.avgScore >= 75
+        ? "#991b1b"
+        : signal.avgScore >= 50
+          ? "#dc2626"
+          : signal.avgScore >= 25
+            ? "#d97706"
+            : "#15803d",
+  }));
 
-  const width = 500;
-  const height = 160;
-  const padding = { top: 20, right: 20, bottom: 25, left: 30 };
-  const chartWidth = width - padding.left - padding.right;
-  const chartHeight = height - padding.top - padding.bottom;
-
-  const barWidth = Math.min(36, (chartWidth / dailySignals.length) * 0.6);
-
-  const getY = (val: number) => {
-    const clamped = Math.max(0, Math.min(100, val));
-    return padding.top + chartHeight - (clamped / 100) * chartHeight;
-  };
-
-  const getX = (index: number) => {
-    return (
-      padding.left +
-      (index / dailySignals.length) * chartWidth +
-      (chartWidth / dailySignals.length) / 2
-    );
-  };
+  const chartConfig = {
+    avgScore: {
+      label: "Support Signal",
+      color: "var(--chart-1)",
+    },
+  } satisfies ChartConfig;
 
   return (
-    <div className="rounded-lg border border-border bg-card p-5 shadow-sm space-y-3">
+    <div className="flex aspect-[3/2] w-full max-w-none flex-col gap-3 rounded-lg border border-border bg-card p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Activity className="h-4 w-4 text-primary" />
@@ -52,95 +62,54 @@ export function CaseloadTrendChart({ dailySignals }: CaseloadTrendChartProps) {
         </span>
       </div>
 
-      <div className="rounded border border-amber-200 bg-amber-50 p-2.5 text-[11px] text-amber-900 leading-snug">
+      <div className="rounded border border-teal-200 bg-secondary p-2.5 text-[11px] text-secondary-foreground leading-snug">
         <div className="flex items-start gap-1.5">
-          <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-700 mt-0.5" />
+          <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-secondary-foreground mt-0.5" />
           <span>{DISTRESS_SIGNAL_DISCLAIMER}</span>
         </div>
       </div>
 
       <div className="relative pt-2">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-40 overflow-visible select-none">
-          {/* Horizontal Grid lines */}
-          {[25, 50, 75, 100].map((val) => (
-            <g key={val}>
-              <line
-                x1={padding.left}
-                y1={getY(val)}
-                x2={width - padding.right}
-                y2={getY(val)}
-                stroke="currentColor"
-                strokeOpacity={0.1}
-                strokeDasharray="2 2"
-              />
-              <text
-                x={padding.left - 5}
-                y={getY(val) + 3}
-                textAnchor="end"
-                fontSize={9}
-                className="fill-muted-foreground font-mono"
-              >
-                {val}
-              </text>
-            </g>
-          ))}
-
-          {/* Bars */}
-          {dailySignals.map((d, idx) => {
-            const x = getX(idx) - barWidth / 2;
-            const y = getY(d.avgScore);
-            const barHeight = padding.top + chartHeight - y;
-
-            const isHovered = hoveredDay?.day === d.day;
-            const fillColor =
-              d.avgScore >= 75
-                ? "rgb(239 68 68 / 0.85)"
-                : d.avgScore >= 50
-                ? "rgb(249 115 22 / 0.85)"
-                : d.avgScore >= 25
-                ? "rgb(234 179 8 / 0.85)"
-                : "rgb(99 102 241 / 0.85)";
-
-            return (
-              <g
-                key={d.day}
-                className="cursor-pointer transition-opacity hover:opacity-90"
-                onMouseEnter={() => setHoveredDay(d)}
-                onMouseLeave={() => setHoveredDay(null)}
-              >
-                <rect
-                  x={x}
-                  y={y}
-                  width={barWidth}
-                  height={Math.max(4, barHeight)}
-                  rx={3}
-                  fill={fillColor}
-                  opacity={isHovered ? 1 : 0.75}
+        <ChartContainer
+          config={chartConfig}
+          className="h-full min-h-40 w-full aspect-auto"
+        >
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid vertical={false} />
+            <YAxis
+              domain={[0, 100]}
+              ticks={[25, 50, 75, 100]}
+              tickLine={false}
+              axisLine={false}
+              width={30}
+              tick={{ fontSize: 9 }}
+            />
+            <XAxis
+              dataKey="day"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tick={{ fontSize: 10 }}
+            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Bar
+              dataKey="avgScore"
+              radius={4}
+              maxBarSize={36}
+              shape={({ index, ...props }: BarShapeProps) => (
+                <Rectangle
+                  {...props}
+                  fill={props.payload?.fill}
+                  fillOpacity={index === chartData.length - 1 ? 1 : 0.78}
                 />
-                <text
-                  x={getX(idx)}
-                  y={height - 8}
-                  textAnchor="middle"
-                  fontSize={10}
-                  className="fill-muted-foreground font-medium"
-                >
-                  {d.day}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-
-        {/* Hover Tooltip */}
-        {hoveredDay && (
-          <div className="rounded-md border border-border bg-popover px-3 py-1.5 text-xs shadow-md text-popover-foreground w-fit mx-auto mt-1 flex items-center gap-3">
-            <span>
-              <strong>{hoveredDay.day}</strong>
-            </span>
-            <span>Avg Support Score: <strong>{hoveredDay.avgScore}/100</strong></span>
-            <span className="text-muted-foreground">({hoveredDay.activeCases} cases monitored)</span>
-          </div>
-        )}
+              )}
+            />
+          </BarChart>
+        </ChartContainer>
       </div>
     </div>
   );

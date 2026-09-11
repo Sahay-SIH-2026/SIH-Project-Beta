@@ -9,7 +9,6 @@ import { ROUTES, DISTRESS_SIGNAL_DISCLAIMER } from "@/lib/constants";
 import { getCurrentProfile } from "@/lib/db/profiles";
 import { createServerClient } from "@/lib/supabase/server";
 
-
 import { CaseloadTrendChart } from "@/components/counselor/CaseloadTrendChart";
 
 export const metadata: Metadata = { title: "Counselor Dashboard" };
@@ -26,7 +25,11 @@ export default async function CounselorDashboardPage() {
   let alertCount = 0;
   let recentCheckInCount = 0;
   let followUpsDueCount = 0;
-  let recentScores: Array<{ score: number; computed_at: string; case_id: string }> = [];
+  let recentScores: Array<{
+    score: number;
+    computed_at: string;
+    case_id: string;
+  }> = [];
 
   if (profile) {
     try {
@@ -44,7 +47,9 @@ export default async function CounselorDashboardPage() {
       ] = await Promise.all([
         supabase
           .from("cases")
-          .select("id, case_ref, status, opened_at, victim:profiles!cases_victim_id_fkey(display_name)")
+          .select(
+            "id, case_ref, status, opened_at, victim:profiles!cases_victim_id_fkey(display_name)",
+          )
           .eq("counselor_id", profile.id)
           .order("opened_at", { ascending: false }),
         supabase
@@ -76,7 +81,11 @@ export default async function CounselorDashboardPage() {
 
   // 7-Day Longitudinal Distress Prioritization Signals
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const dailySignals: Array<{ day: string; avgScore: number; activeCases: number }> = [];
+  const dailySignals: Array<{
+    day: string;
+    avgScore: number;
+    activeCases: number;
+  }> = [];
 
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
@@ -84,10 +93,12 @@ export default async function CounselorDashboardPage() {
     const dateStr = d.toISOString().split("T")[0];
     const dayLabel = `${dayNames[d.getDay()]} ${d.getDate()}`;
 
-    const dayScores = recentScores.filter((s) => s.computed_at.startsWith(dateStr));
+    const dayScores = recentScores.filter((s) =>
+      s.computed_at.startsWith(dateStr),
+    );
     if (dayScores.length > 0) {
       const avg = Math.round(
-        dayScores.reduce((acc, s) => acc + s.score, 0) / dayScores.length
+        dayScores.reduce((acc, s) => acc + s.score, 0) / dayScores.length,
       );
       const uniqueCases = new Set(dayScores.map((s) => s.case_id)).size;
       dailySignals.push({
@@ -140,44 +151,46 @@ export default async function CounselorDashboardPage() {
   return (
     <div>
       {/* Prototype notice */}
-      <div className="mb-5 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        <strong>Prototype — synthetic data only.</strong> All victim profiles, case IDs, and check-in records are synthetic demonstration data.
+      <div className="mb-5 rounded-md border border-teal-200 bg-secondary px-4 py-3 text-xs text-secondary-foreground">
+        <strong>Prototype — synthetic data only.</strong> All victim profiles,
+        case IDs, and check-in records are synthetic demonstration data.
       </div>
 
       <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Welcome back{profile ? `, ${profile.display_name}` : ""}. Here is an overview of your active caseload and pending tasks.
+        Welcome back{profile ? `, ${profile.display_name}` : ""}. Here is an
+        overview of your active caseload and pending tasks.
       </p>
 
-      {/* KPI cards */}
-      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {kpis.map(({ id, label, value, note, href, urgent }) => (
-          <Link
-            key={id}
-            id={id}
-            href={href}
-            className={`group rounded-lg border p-5 no-underline transition hover:shadow-md ${
-              urgent
-                ? "border-amber-300 bg-amber-50/40"
-                : "border-border bg-card"
-            }`}
-          >
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {label}
-            </p>
-            <p className={`mt-2 text-3xl font-bold ${urgent ? "text-amber-800" : "text-foreground"}`}>
-              {value}
-            </p>
-            <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
-              <span>{note}</span>
-              <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5 text-primary" />
-            </div>
-          </Link>
-        ))}
-      </div>
+      <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-stretch">
+        {/* KPI cards */}
+        <div className="grid grid-cols-2 gap-4">
+          {kpis.map(({ id, label, value, note, href, urgent }) => (
+            <Link
+              key={id}
+              id={id}
+              href={href}
+              className={`group rounded-lg border p-5 no-underline transition hover:shadow-md ${
+                urgent ? "border-amber-300 bg-accent" : "border-border bg-card"
+              }`}
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {label}
+              </p>
+              <p
+                className={`mt-2 text-3xl font-bold ${urgent ? "text-amber-700" : "text-foreground"}`}
+              >
+                {value}
+              </p>
+              <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+                <span>{note}</span>
+                <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5 text-primary" />
+              </div>
+            </Link>
+          ))}
+        </div>
 
-      {/* Caseload Longitudinal Support Trend */}
-      <div className="mt-6">
+        {/* Caseload Longitudinal Support Trend */}
         <CaseloadTrendChart dailySignals={dailySignals} />
       </div>
 

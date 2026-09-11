@@ -24,6 +24,141 @@ Each entry follows this template:
 
 ---
 
+### 2026-09-12 — Fix case-details column layout
+**Type:** Bug Fix | UX
+**Files changed:** `app/counselor/cases/[id]/page.tsx`
+**Status:** ✅ Done
+
+Replaced implicit three-column sizing with explicit equal two-column tracks. Added `min-w-0` and top alignment to keep check-ins and interactions visible beside right-side case panels.
+
+---
+
+### 2026-09-12 — Place KPI cards beside trend card
+**Type:** UX
+**Files changed:** `app/counselor/page.tsx`, `components/counselor/CaseloadTrendChart.tsx`
+**Status:** ✅ Done
+
+Placed four existing KPI cards in a 2×2 grid beside Caseload Support Signal Trend on large screens. Layout stacks on smaller screens. No data or behavior changed.
+
+---
+
+### 2026-09-12 — Make caseload trend card square-like
+**Type:** UX
+**Files changed:** `components/counselor/CaseloadTrendChart.tsx`
+**Status:** ✅ Done
+
+Constrained Caseload Support Signal Trend card to centered `max-w-3xl` width with 4:3 aspect ratio. Chart expands within card.
+
+---
+
+### 2026-09-12 — Center counselor page content
+**Type:** UX
+**Files changed:** `app/counselor/layout.tsx`
+**Status:** ✅ Done
+
+Added centered `max-w-6xl` content container inside counselor layout. Counselor pages now use same wide side margins as victim Dashboard while preserving page structure and data flow.
+
+---
+
+### 2026-09-12 — Fix duplicate victim sidebar selection
+**Type:** Bug Fix | UX
+**Files changed:** `components/app-sidebar.tsx`
+**Status:** ✅ Done
+
+Fixed Dashboard-08 active navigation logic to use current portal root. Victim Home no longer stays selected on Check-in, My Case, My Data, or Support routes.
+
+---
+
+### 2026-09-12 — Remove duplicate victim portal header
+**Type:** UX
+**Files changed:** `app/victim/layout.tsx`
+**Status:** ✅ Done
+
+Removed the top public header from the victim Dashboard shell. Dashboard-08 sidebar branding and inner Victim Portal header remain available. No routes, authentication, data flow, or backend logic changed.
+
+---
+
+### 2026-09-12 — Move victim navigation into Dashboard-08 sidebar
+**Type:** UX
+**Files changed:** `components/app-sidebar.tsx`, `app/victim/layout.tsx`
+**Status:** ✅ Done
+
+Reused the Dashboard-08 sidebar shell for the victim portal. Home, Check-in, My Case, My Data, and Support now use sidebar navigation on desktop and responsive off-canvas navigation on mobile. Existing routes, authentication, page data, and actions remain unchanged.
+
+---
+
+### 2026-09-12 — Add victim Check-in tab and focus CTA
+**Type:** UX
+**Files changed:** `components/navigation/VictimNav.tsx`, `app/victim/page.tsx`
+**Status:** 🚧 Needs Verification
+
+Added a direct Check-in tab to the victim portal navigation and restyled the existing Need to talk action as a centered, primary Dashboard focal point. The existing check-in route and all data flow remain unchanged.
+
+---
+
+### 2026-09-12 — Add live voice waveform to check-in
+**Type:** Feature | UX
+**Files changed:** `components/ui/live-waveform.tsx`, `components/victim/CheckInForm.tsx`
+**Status:** ✅ Done
+
+Added an ElevenLabs-compatible `LiveWaveform` component beside the existing voice transcription status. It runs in processing mode so Vapi remains the only microphone/audio owner; existing transcription, submission, authentication, and backend behavior are unchanged. The ElevenLabs registry installer was attempted but returned HTTP 429, so the component is locally implemented with the same public props needed by this screen.
+
+---
+
+### 2026-09-12 — Add minimal dashboard page margins
+**Type:** UX
+**Files changed:** `app/counselor/layout.tsx`, `app/admin/layout.tsx`, `app/victim/layout.tsx`
+**Status:** ✅ Done
+
+Added small responsive outer margins to all portal content layouts. Existing internal padding, structure, functionality, and routes remain unchanged.
+
+---
+
+### 2026-09-12 — Replace trend SVG with shadcn chart
+**Type:** Feature | UX
+**Files changed:** `components/counselor/CaseloadTrendChart.tsx`, `components/ui/chart.tsx`, `package.json`, `package-lock.json`
+**Status:** ✅ Done
+
+Replaced the custom SVG trend rendering with the installed shadcn `ChartContainer` and Recharts bar chart. The existing `dailySignals` data contract, score thresholds, status colors, disclaimer, and counselor dashboard placement are preserved.
+
+---
+
+### 2026-09-12 — Apply civic digital-health dashboard palette
+**Type:** UX
+**Files changed:** `app/globals.css`, `app/counselor/page.tsx`, `components/counselor/CaseloadTrendChart.tsx`
+**Status:** ✅ Done
+
+Updated the existing dashboard and sidebar color tokens to the supplied deep-indigo, institutional-teal, warm-amber, cool-neutral, and status palette. Existing component structure, spacing, typography, icons, logo markup, routes, data flow, and behavior remain unchanged.
+
+---
+
+### 2026-09-12 — Apply reference dashboard color scheme
+**Type:** UX
+**Files changed:** `app/globals.css`, `app/counselor/page.tsx`, `components/counselor/CaseloadTrendChart.tsx`
+**Status:** ✅ Done
+
+Applied the reference palette of white surfaces, cool gray backgrounds and borders, and ink/navy accents to the counselor dashboard and sidebar tokens. Updated only existing color classes and chart fills; component structure, layout, logo markup, routes, data flow, and functionality remain unchanged.
+
+---
+
+### 2026-09-12 — Restore utility exports after shadcn preset
+**Type:** Bug Fix | UX
+**Files changed:** `lib/utils.ts`, `app/counselor/cases/page.tsx`
+**Status:** ✅ Done
+
+Restored the utility barrel export so existing date formatting consumers resolve `formatDateOnly` and the related helpers again. Updated counselor case status filters to use the installed shadcn `Button` component while preserving their existing links, filters, and server-side data flow. No backend logic was changed.
+
+---
+
+### 2026-09-12 — Integrate sidebar-08 into counselor dashboard
+**Type:** Feature | UX
+**Files changed:** `components/app-sidebar.tsx`, `app/counselor/layout.tsx`
+**Status:** ✅ Done
+
+Replaced the generated sidebar-08 demo content with the existing counselor portal routes and navigation state. Wrapped the counselor layout in `SidebarProvider` and `SidebarInset`, added the responsive sidebar trigger, and preserved the existing sign-out action and profile display. No backend logic, queries, API routes, authentication logic, database schema, or business logic was changed.
+
+---
+
 ### 2026-09-11 — Enforce counsellor assignment boundaries
 **Type:** Security | Bug Fix
 **Files changed:** `app/counselor/page.tsx`, `app/counselor/cases/page.tsx`, `app/counselor/cases/[id]/page.tsx`, `lib/auth/case-access.ts`, `app/actions/cases.ts`, `app/actions/interactions.ts`, `app/actions/follow-ups.ts`, `app/actions/risk.ts`, `supabase/schema.sql`, `supabase/migrations/20260908000000_initial_schema.sql`, `supabase/migrations/20260911000000_enforce_counselor_case_scope.sql`

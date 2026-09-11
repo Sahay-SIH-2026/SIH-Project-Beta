@@ -30,7 +30,8 @@ import { relativeTime } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Home",
-  description: "Your LUMA support home — check in, view your support, and access resources.",
+  description:
+    "Your LUMA support home — check in, view your support, and access resources.",
 };
 
 /* ─── Data shapes ──────────────────────────────────────────────────────────── */
@@ -91,7 +92,7 @@ export default async function VictimHomePage() {
         supabase
           .from("cases")
           .select(
-            "id, case_ref, status, opened_at, updated_at, counselor:profiles!cases_counselor_id_fkey(display_name)"
+            "id, case_ref, status, opened_at, updated_at, counselor:profiles!cases_counselor_id_fkey(display_name)",
           )
           .eq("victim_id", profile.id)
           .order("opened_at", { ascending: false })
@@ -108,7 +109,9 @@ export default async function VictimHomePage() {
         /* Next pending follow-up (linked to any of the victim's cases) */
         supabase
           .from("follow_ups")
-          .select("id, title, due_date, description, case:cases!follow_ups_case_id_fkey(victim_id)")
+          .select(
+            "id, title, due_date, description, case:cases!follow_ups_case_id_fkey(victim_id)",
+          )
           .eq("status", "PENDING")
           .order("due_date", { ascending: true })
           .limit(10),
@@ -138,7 +141,9 @@ export default async function VictimHomePage() {
   }
 
   const firstName = profile?.display_name?.split(" ")[0] ?? "";
-  const recentlyCheckedIn = latestCheckIn ? isRecentCheckIn(latestCheckIn.submitted_at) : false;
+  const recentlyCheckedIn = latestCheckIn
+    ? isRecentCheckIn(latestCheckIn.submitted_at)
+    : false;
   const hasRecentUpdate =
     caseRecord && caseRecord.updated_at !== caseRecord.opened_at;
 
@@ -161,30 +166,34 @@ export default async function VictimHomePage() {
       <section className="mb-8" aria-labelledby="victim-need-to-talk-heading">
         <Link
           href={ROUTES.victim.checkIn}
-          className="group relative block overflow-hidden rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/[0.04] to-accent/[0.04] p-6 no-underline shadow-sm transition-all hover:border-primary/30 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="group relative block overflow-hidden rounded-2xl border-2 border-primary/25 bg-gradient-to-br from-primary/[0.08] via-card to-secondary/70 p-8 text-center no-underline shadow-md transition-all hover:border-primary/45 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:p-10"
         >
-          {/* Decorative left accent bar */}
+          {/* Decorative focus accent */}
           <div
-            className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary to-accent/80"
+            className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-secondary-foreground to-accent"
             aria-hidden="true"
           />
-          <div className="flex items-start gap-4 pl-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10">
-              <Heart className="h-5 w-5 text-primary" aria-hidden="true" />
+          <div className="mx-auto flex max-w-2xl flex-col items-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 ring-8 ring-primary/5">
+              <Heart className="h-6 w-6 text-primary" aria-hidden="true" />
             </div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0">
               <h2
                 id="victim-need-to-talk-heading"
-                className="text-lg font-semibold text-foreground"
+                className="mt-5 text-xl font-semibold text-foreground sm:text-2xl"
               >
                 Need to talk?
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                If something is worrying you, or you just want to share how you&rsquo;re feeling, you can check in with your support team.
+              <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                If something is worrying you, or you just want to share how
+                you&rsquo;re feeling, you can check in with your support team.
               </p>
-              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+              <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition group-hover:bg-primary/90">
                 Share how I&rsquo;m feeling
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                <ArrowRight
+                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
               </span>
             </div>
           </div>
@@ -193,13 +202,17 @@ export default async function VictimHomePage() {
 
       {/* ── Section 2.5: Recent Check-in Status ────────────────────────────── */}
       {recentlyCheckedIn && (
-        <section className="mb-8" aria-labelledby="victim-checkin-summary-heading">
-          <div
-            className="relative overflow-hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50/80 to-white p-6 shadow-sm"
-          >
+        <section
+          className="mb-8"
+          aria-labelledby="victim-checkin-summary-heading"
+        >
+          <div className="relative overflow-hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50/80 to-white p-6 shadow-sm">
             <div className="flex items-start gap-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-100">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden="true" />
+                <CheckCircle2
+                  className="h-5 w-5 text-emerald-600"
+                  aria-hidden="true"
+                />
               </div>
               <div className="min-w-0 flex-1">
                 <h2
@@ -209,7 +222,8 @@ export default async function VictimHomePage() {
                   Thanks for checking in
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                  Your check-in has been recorded. Your support team will review it.
+                  Your check-in has been recorded. Your support team will review
+                  it.
                 </p>
                 {latestCheckIn && (
                   <p className="mt-2 text-xs text-muted-foreground">
@@ -237,7 +251,10 @@ export default async function VictimHomePage() {
           aria-labelledby="victim-support-heading"
         >
           <div className="flex items-center gap-2 mb-3">
-            <ShieldCheck className="h-4.5 w-4.5 text-emerald-600" aria-hidden="true" />
+            <ShieldCheck
+              className="h-4.5 w-4.5 text-emerald-600"
+              aria-hidden="true"
+            />
             <h2
               id="victim-support-heading"
               className="text-sm font-semibold uppercase tracking-wide text-muted-foreground"
@@ -250,7 +267,10 @@ export default async function VictimHomePage() {
             <>
               <div className="flex items-center gap-2 mb-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+                  <span
+                    className="h-1.5 w-1.5 rounded-full bg-emerald-500"
+                    aria-hidden="true"
+                  />
                   Support active
                 </span>
               </div>
@@ -259,7 +279,10 @@ export default async function VictimHomePage() {
               </p>
               <div className="mt-3 space-y-1 text-xs text-muted-foreground">
                 <p>
-                  Case: <span className="font-mono font-medium text-foreground">{caseRecord.case_ref}</span>
+                  Case:{" "}
+                  <span className="font-mono font-medium text-foreground">
+                    {caseRecord.case_ref}
+                  </span>
                 </p>
                 <p>
                   Counselor:{" "}
@@ -300,7 +323,10 @@ export default async function VictimHomePage() {
           aria-labelledby="victim-next-heading"
         >
           <div className="flex items-center gap-2 mb-3">
-            <CalendarDays className="h-4.5 w-4.5 text-primary" aria-hidden="true" />
+            <CalendarDays
+              className="h-4.5 w-4.5 text-primary"
+              aria-hidden="true"
+            />
             <h2
               id="victim-next-heading"
               className="text-sm font-semibold uppercase tracking-wide text-muted-foreground"
@@ -343,7 +369,10 @@ export default async function VictimHomePage() {
           aria-labelledby="victim-update-heading"
         >
           <div className="flex items-center gap-2 mb-2">
-            <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <FileText
+              className="h-4 w-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <h2
               id="victim-update-heading"
               className="text-sm font-semibold uppercase tracking-wide text-muted-foreground"
@@ -403,7 +432,10 @@ export default async function VictimHomePage() {
         className="mt-5 flex items-start gap-3 rounded-xl border border-border bg-secondary/50 p-4"
         aria-labelledby="victim-privacy-heading"
       >
-        <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <Lock
+          className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+          aria-hidden="true"
+        />
         <div className="text-sm text-muted-foreground leading-relaxed">
           <h2 id="victim-privacy-heading" className="sr-only">
             Privacy and consent

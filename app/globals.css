@@ -7,103 +7,113 @@
 /* ─── LUMA Design Tokens ─────────────────────────────────────────────────── */
 @theme inline {
   /* Colour mappings → CSS variables below */
-  --color-background:         var(--background);
-  --color-foreground:         var(--foreground);
-  --color-card:               var(--card);
-  --color-card-foreground:    var(--card-foreground);
-  --color-popover:            var(--popover);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  --color-primary:            var(--primary);
+  --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-secondary:          var(--secondary);
+  --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted:              var(--muted);
-  --color-muted-foreground:   var(--muted-foreground);
-  --color-accent:             var(--accent);
-  --color-accent-foreground:  var(--accent-foreground);
-  --color-destructive:        var(--destructive);
-  --color-border:             var(--border);
-  --color-input:              var(--input);
-  --color-ring:               var(--ring);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
   /* Semantic status colours */
-  --color-status-success:     var(--status-success);
-  --color-status-warning:     var(--status-warning);
-  --color-status-danger:      var(--status-danger);
-  --color-status-info:        var(--status-info);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-status-info: var(--status-info);
 
   /* Sidebar */
-  --color-sidebar:                    var(--sidebar);
-  --color-sidebar-foreground:         var(--sidebar-foreground);
-  --color-sidebar-primary:            var(--sidebar-primary);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent:             var(--sidebar-accent);
-  --color-sidebar-accent-foreground:  var(--sidebar-accent-foreground);
-  --color-sidebar-border:             var(--sidebar-border);
-  --color-sidebar-ring:               var(--sidebar-ring);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
   /* Border radii */
-  --radius-sm:  calc(var(--radius) * 0.5);
-  --radius-md:  calc(var(--radius) * 0.75);
-  --radius-lg:  var(--radius);
-  --radius-xl:  calc(var(--radius) * 1.5);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
   --radius-2xl: calc(var(--radius) * 2);
 
   /* Typography */
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 /* ─── Light Mode (default) ────────────────────────────────────────────────── */
 :root {
-  /* Government Navy / Blue base */
-  --background:         oklch(0.99 0.002 240);
-  --foreground:         oklch(0.18 0.02 240);
+  /* Civic digital-health palette */
 
-  --card:               oklch(1 0 0);
-  --card-foreground:    oklch(0.18 0.02 240);
+  --card: #ffffff;
+  --card-foreground: #172033;
 
-  --popover:            oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 240);
+  --popover: #ffffff;
+  --popover-foreground: #172033;
 
-  /* Primary = deep government navy */
-  --primary:            oklch(0.28 0.07 248);
-  --primary-foreground: oklch(0.99 0 0);
+  --primary: #253b80;
+  --primary-foreground: #ffffff;
 
-  /* Secondary = light neutral gray */
-  --secondary:          oklch(0.96 0.003 240);
-  --secondary-foreground: oklch(0.28 0.07 248);
+  --secondary: #e6f4f1;
+  --secondary-foreground: #0f766e;
 
-  --muted:              oklch(0.96 0.003 240);
-  --muted-foreground:   oklch(0.50 0.015 240);
+  --muted: #f5f7fb;
+  --muted-foreground: #64748b;
 
-  /* Accent = saffron */
-  --accent:             oklch(0.72 0.18 55);
-  --accent-foreground:  oklch(0.18 0.02 240);
+  --accent: #fef3c7;
+  --accent-foreground: #92400e;
 
-  --destructive:        oklch(0.58 0.22 25);
+  --destructive: #dc2626;
 
-  --border:             oklch(0.88 0.005 240);
-  --input:              oklch(0.92 0.004 240);
-  --ring:               oklch(0.28 0.07 248);
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #253b80;
 
   /* Status semantics */
-  --status-success:     oklch(0.55 0.14 145);
-  --status-warning:     oklch(0.70 0.17 60);
-  --status-danger:      oklch(0.58 0.22 25);
-  --status-info:        oklch(0.50 0.12 240);
+  --status-success: #15803d;
+  --status-warning: #d97706;
+  --status-danger: #dc2626;
+  --status-info: #2563eb;
 
-  --radius: 0.5rem;
+  --radius: 0.875rem;
 
   /* Sidebar (counselor/admin) */
-  --sidebar:                    oklch(0.24 0.05 248);
-  --sidebar-foreground:         oklch(0.93 0.005 240);
-  --sidebar-primary:            oklch(0.72 0.18 55);
-  --sidebar-primary-foreground: oklch(0.18 0.02 240);
-  --sidebar-accent:             oklch(0.32 0.06 248);
-  --sidebar-accent-foreground:  oklch(0.93 0.005 240);
-  --sidebar-border:             oklch(0.35 0.05 248);
-  --sidebar-ring:               oklch(0.72 0.18 55);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #172033;
+  --sidebar-primary: #253b80;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e6f4f1;
+  --sidebar-accent-foreground: #0f766e;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #253b80;
+  --background: #f5f7fb;
+  --foreground: #172033;
+  --chart-1: #253b80;
+  --chart-2: #0f766e;
+  --chart-3: #15803d;
+  --chart-4: #f59e0b;
+  --chart-5: #2563eb;
 }
 
 /* ─── Base Styles ─────────────────────────────────────────────────────────── */
@@ -114,7 +124,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 
   html {
@@ -124,7 +136,12 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold tracking-tight;
   }
 
@@ -162,4 +179,38 @@
   .status-badge-urgent {
     @apply bg-red-50 text-red-800 border-red-200;
   }
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.795 0.184 86.047);
+  --primary-foreground: oklch(0.421 0.095 57.708);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.837 0.128 66.29);
+  --chart-2: oklch(0.705 0.213 47.604);
+  --chart-3: oklch(0.646 0.222 41.116);
+  --chart-4: oklch(0.553 0.195 38.402);
+  --chart-5: oklch(0.47 0.157 37.304);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.795 0.184 86.047);
+  --sidebar-primary-foreground: oklch(0.987 0.026 102.212);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }

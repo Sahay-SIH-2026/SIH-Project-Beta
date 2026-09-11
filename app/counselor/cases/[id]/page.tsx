@@ -172,9 +172,9 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
       </div>
 
       {/* Main Grid: 2 columns */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid min-w-0 items-start gap-6 lg:grid-cols-2">
         {/* Left Column (2 cols): Check-ins and Interactions */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="min-w-0 space-y-6">
           {/* Check-In History */}
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
@@ -291,7 +291,7 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
         </div>
 
         {/* Right Column (1 col): Notes, Follow-ups, Distress Signals */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           {/* Case Notes */}
           <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <h3 className="text-sm font-semibold text-foreground mb-2">

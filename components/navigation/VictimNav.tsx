@@ -7,17 +7,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FolderOpen, Database, LifeBuoy } from "lucide-react";
+import {
+  Home,
+  FolderOpen,
+  Database,
+  LifeBuoy,
+  MessageCircleHeart,
+} from "lucide-react";
 import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 import { SignOutButton } from "@/components/auth/SignOutButton";
 
 const NAV_ITEMS = [
-  { href: ROUTES.victim.root,    label: "Home",      icon: Home       },
-  { href: ROUTES.victim.case,    label: "My Case",   icon: FolderOpen },
-  { href: ROUTES.victim.data,    label: "My Data",   icon: Database   },
-  { href: ROUTES.victim.support, label: "Support",   icon: LifeBuoy   },
+  { href: ROUTES.victim.root, label: "Home", icon: Home },
+  { href: ROUTES.victim.checkIn, label: "Check-in", icon: MessageCircleHeart },
+  { href: ROUTES.victim.case, label: "My Case", icon: FolderOpen },
+  { href: ROUTES.victim.data, label: "My Data", icon: Database },
+  { href: ROUTES.victim.support, label: "Support", icon: LifeBuoy },
 ] as const;
 
 export function VictimNav() {
@@ -33,9 +40,10 @@ export function VictimNav() {
         <div className="luma-container flex h-11 items-center justify-between">
           <div className="flex items-center gap-1">
             {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-              const active = href === ROUTES.victim.root 
-                ? pathname === href 
-                : pathname === href || pathname.startsWith(href + "/");
+              const active =
+                href === ROUTES.victim.root
+                  ? pathname === href
+                  : pathname === href || pathname.startsWith(href + "/");
               return (
                 <Link
                   key={href}
@@ -45,7 +53,7 @@ export function VictimNav() {
                     "flex items-center gap-1.5 rounded px-3 py-1.5 text-sm font-medium transition-colors no-underline",
                     active
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                   )}
                 >
                   <Icon className="h-3.5 w-3.5" aria-hidden="true" />
@@ -64,9 +72,10 @@ export function VictimNav() {
         className="fixed inset-x-0 bottom-0 z-50 flex border-t border-border bg-white sm:hidden"
       >
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const active = href === ROUTES.victim.root 
-            ? pathname === href 
-            : pathname === href || pathname.startsWith(href + "/");
+          const active =
+            href === ROUTES.victim.root
+              ? pathname === href
+              : pathname === href || pathname.startsWith(href + "/");
           return (
             <Link
               key={href}
@@ -74,7 +83,7 @@ export function VictimNav() {
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex flex-1 flex-col items-center justify-center gap-1 py-2 text-xs no-underline transition-colors",
-                active ? "text-primary" : "text-muted-foreground"
+                active ? "text-primary" : "text-muted-foreground",
               )}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
