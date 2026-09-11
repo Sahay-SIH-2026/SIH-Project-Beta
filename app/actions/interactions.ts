@@ -1,7 +1,7 @@
 "use server";
 
 import { createServerClient } from "@/lib/supabase/server";
-import { getCurrentProfile } from "@/lib/db/profiles";
+import { requireCaseAccess } from "@/lib/auth/case-access";
 import { logAuditEvent } from "@/lib/db/audit";
 import { revalidatePath } from "next/cache";
 import type { InteractionChannel } from "@/types/database.types";
@@ -19,10 +19,7 @@ export async function logInteractionAction(
   occurredAt?: string
 ): Promise<InteractionActionState> {
   try {
-    const profile = await getCurrentProfile();
-    if (!profile || (profile.role !== "COUNSELOR" && profile.role !== "ADMIN")) {
-      return { error: "Unauthorized: only staff can record interactions." };
-    }
+    const { profile } = await requireCaseAccess(caseId);
 
     if (!summary || summary.trim().length === 0) {
       return { error: "Please enter a summary of the interaction." };

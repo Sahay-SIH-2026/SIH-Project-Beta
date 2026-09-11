@@ -255,7 +255,17 @@ create policy "profiles_select_own" on public.profiles
 drop policy if exists "profiles_select_staff" on public.profiles;
 create policy "profiles_select_staff" on public.profiles
   for select to authenticated
-  using ((select public.get_my_role()) in ('COUNSELOR', 'ADMIN'));
+  using (
+    (select public.get_my_role()) = 'ADMIN'
+    or (
+      (select public.get_my_role()) = 'COUNSELOR'
+      and exists (
+        select 1 from public.cases
+        where cases.counselor_id = (select auth.uid())
+          and cases.victim_id = profiles.id
+      )
+    )
+  );
 
 drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own" on public.profiles
@@ -288,7 +298,13 @@ create policy "cases_select_staff" on public.cases
 drop policy if exists "cases_insert_staff" on public.cases;
 create policy "cases_insert_staff" on public.cases
   for insert to authenticated
-  with check ((select public.get_my_role()) in ('COUNSELOR', 'ADMIN'));
+  with check (
+    (select public.get_my_role()) = 'ADMIN'
+    or (
+      (select public.get_my_role()) = 'COUNSELOR'
+      and counselor_id = (select auth.uid())
+    )
+  );
 
 drop policy if exists "cases_insert_victim" on public.cases;
 create policy "cases_insert_victim" on public.cases

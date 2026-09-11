@@ -3,7 +3,13 @@
  */
 
 import type { Metadata } from "next";
-import { CounselorNav } from "@/components/navigation/CounselorNav";
+import { AppSidebar } from "@/components/app-sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { getCurrentProfile } from "@/lib/db/profiles";
 
 export const metadata: Metadata = {
   title: {
@@ -12,19 +18,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CounselorLayout({
+export default async function CounselorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const profile = await getCurrentProfile();
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      <CounselorNav />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto bg-background p-6">
-          {children}
+    <SidebarProvider>
+      <AppSidebar profileName={profile?.display_name ?? "Counselor"} />
+      <SidebarInset>
+        <header className="flex h-12 shrink-0 items-center border-b px-4">
+          <SidebarTrigger />
+          <span className="ml-2 text-sm font-medium text-muted-foreground">
+            Counselor Portal
+          </span>
+        </header>
+        <main className="m-2 flex-1 overflow-y-auto bg-background p-6 md:m-4">
+          <div className="mx-auto w-full max-w-6xl">{children}</div>
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

@@ -14,6 +14,7 @@ import {
   Volume2,
 } from "lucide-react";
 import Vapi from "@vapi-ai/web";
+import { LiveWaveform } from "@/components/ui/live-waveform";
 
 export function CheckInForm() {
   const [text, setText] = useState("");
@@ -98,7 +99,10 @@ export function CheckInForm() {
       vapi.on("error", (error: any) => {
         console.error("VAPI ERROR:", error);
         stopRecording();
-        const errMsg = error?.message || error?.error?.message || typeof error === "string" ? error : JSON.stringify(error);
+        const errMsg =
+          error?.message || error?.error?.message || typeof error === "string"
+            ? error
+            : JSON.stringify(error);
         setStatus({ error: `Voice API Error: ${errMsg}` });
       });
 
@@ -116,15 +120,21 @@ export function CheckInForm() {
             "";
 
           console.log("VAPI TRANSCRIPT:", transcriptText);
-          console.log("VAPI TRANSCRIPT TYPE:", message.transcriptType || (message.isFinal ? "final" : "partial"));
+          console.log(
+            "VAPI TRANSCRIPT TYPE:",
+            message.transcriptType || (message.isFinal ? "final" : "partial"),
+          );
 
           if (transcriptText.trim()) {
-            const isFinal = message.transcriptType === "final" || message.isFinal === true;
-            
+            const isFinal =
+              message.transcriptType === "final" || message.isFinal === true;
+
             if (isFinal) {
               setText((prev) => {
                 const cleanPrev = prev.replace(/\s*\.\.\.$/, "").trim();
-                const newText = cleanPrev ? `${cleanPrev} ${transcriptText.trim()}` : transcriptText.trim();
+                const newText = cleanPrev
+                  ? `${cleanPrev} ${transcriptText.trim()}`
+                  : transcriptText.trim();
                 baselineTextRef.current = newText;
                 return newText;
               });
@@ -133,7 +143,9 @@ export function CheckInForm() {
               // It's a partial/interim transcript
               setText((prev) => {
                 const cleanPrev = prev.replace(/\s*\.\.\.$/, "").trim();
-                return cleanPrev ? `${cleanPrev} ${transcriptText.trim()}...` : `${transcriptText.trim()}...`;
+                return cleanPrev
+                  ? `${cleanPrev} ${transcriptText.trim()}...`
+                  : `${transcriptText.trim()}...`;
               });
             }
           }
@@ -145,7 +157,7 @@ export function CheckInForm() {
 
           if (Array.isArray(messages)) {
             const userMessages = messages.filter(
-              (m: any) => m?.role === "user"
+              (m: any) => m?.role === "user",
             );
 
             const latest = userMessages[userMessages.length - 1];
@@ -170,7 +182,7 @@ export function CheckInForm() {
         clientMessages: [
           "transcript",
           "conversation-update",
-          "speech-update"
+          "speech-update",
         ] as any,
         model: {
           provider: "openai" as const,
@@ -178,7 +190,8 @@ export function CheckInForm() {
           messages: [
             {
               role: "system" as const,
-              content: "You are a friendly transcriber assistant. When the user speaks, just reply with 'Okay, I am listening.'",
+              content:
+                "You are a friendly transcriber assistant. When the user speaks, just reply with 'Okay, I am listening.'",
             },
           ],
         },
@@ -191,7 +204,10 @@ export function CheckInForm() {
 
       vapi.start(assistantConfig).catch((err: Error) => {
         console.error("Failed to start Vapi:", err);
-        setStatus({ error: "Microphone access is required to use voice check-in, or connection failed." });
+        setStatus({
+          error:
+            "Microphone access is required to use voice check-in, or connection failed.",
+        });
         setIsRecording(false);
         if (timerRef.current) clearInterval(timerRef.current);
       });
@@ -216,7 +232,9 @@ export function CheckInForm() {
         // Give the deepgram transcriber 2.5 seconds to flush the buffer
         // backwards over the WebSocket before we destroy the WebRTC connection.
         setTimeout(() => {
-          try { vapiRef.current?.stop(); } catch (e) { }
+          try {
+            vapiRef.current?.stop();
+          } catch (e) {}
           setIsFinishing(false);
           setIsRecording(false);
           if (timerRef.current) {
@@ -261,7 +279,10 @@ export function CheckInForm() {
       }
     } catch (err: unknown) {
       setStatus({
-        error: err instanceof Error ? err.message : "Submission failed. Please try again.",
+        error:
+          err instanceof Error
+            ? err.message
+            : "Submission failed. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -270,11 +291,20 @@ export function CheckInForm() {
 
   if (status?.success) {
     return (
-      <section className="rounded-lg border border-emerald-200 bg-card p-8 text-center shadow-sm" aria-live="polite">
-        <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600" aria-hidden="true" />
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Check-in recorded</h2>
+      <section
+        className="rounded-lg border border-emerald-200 bg-card p-8 text-center shadow-sm"
+        aria-live="polite"
+      >
+        <CheckCircle2
+          className="mx-auto h-12 w-12 text-emerald-600"
+          aria-hidden="true"
+        />
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          Check-in recorded
+        </h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Thank you for checking in. Your response has been securely recorded and your support team can review it.
+          Thank you for checking in. Your response has been securely recorded
+          and your support team can review it.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
@@ -295,7 +325,10 @@ export function CheckInForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6 shadow-sm">
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-lg border border-border bg-card p-6 shadow-sm"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
           <label
@@ -305,7 +338,8 @@ export function CheckInForm() {
             How are you feeling today?
           </label>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Write or speak freely. You can share your feelings, any difficulties you are facing, or what went well.
+            Write or speak freely. You can share your feelings, any difficulties
+            you are facing, or what went well.
           </p>
         </div>
 
@@ -330,11 +364,18 @@ export function CheckInForm() {
 
         {/* Language selector for voice recognition */}
         <div className="flex items-center gap-2">
-          <label htmlFor="voice-lang-select" className="text-[11px] text-muted-foreground">Speech Language:</label>
+          <label
+            htmlFor="voice-lang-select"
+            className="text-[11px] text-muted-foreground"
+          >
+            Speech Language:
+          </label>
           <select
             id="voice-lang-select"
             value={selectedLang}
-            onChange={(e) => setSelectedLang(e.target.value as "hi-IN" | "en-IN")}
+            onChange={(e) =>
+              setSelectedLang(e.target.value as "hi-IN" | "en-IN")
+            }
             className="rounded border border-input bg-background px-2 py-0.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             disabled={isRecording}
           >
@@ -352,7 +393,7 @@ export function CheckInForm() {
               type="button"
               onClick={stopRecording}
               disabled={isFinishing}
-              className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-sm transition ${isFinishing ? 'bg-muted text-muted-foreground' : 'bg-destructive text-destructive-foreground hover:bg-destructive/90 animate-pulse'}`}
+              className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-sm transition ${isFinishing ? "bg-muted text-muted-foreground" : "bg-destructive text-destructive-foreground hover:bg-destructive/90 animate-pulse"}`}
             >
               {isFinishing ? (
                 <>
@@ -382,7 +423,9 @@ export function CheckInForm() {
           <button
             type="button"
             onClick={() => {
-              setText("Someone is threatening me to kill and he is outside the door knocking very hard with weapons.");
+              setText(
+                "Someone is threatening me to kill and he is outside the door knocking very hard with weapons.",
+              );
               setVoiceUsed(false);
             }}
             className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-[11px] font-semibold text-orange-700 shadow-sm transition hover:bg-orange-100 dark:border-orange-900/50 dark:bg-orange-950/40 dark:text-orange-400"
@@ -390,11 +433,13 @@ export function CheckInForm() {
           >
             Threat Scenario
           </button>
-          
+
           <button
             type="button"
             onClick={() => {
-              setText("I am being continuously threatened and harassed, and I am afraid for my safety and do not know what to do.");
+              setText(
+                "I am being continuously threatened and harassed, and I am afraid for my safety and do not know what to do.",
+              );
               setVoiceUsed(false);
             }}
             className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-[11px] font-semibold text-orange-700 shadow-sm transition hover:bg-orange-100 dark:border-orange-900/50 dark:bg-orange-950/40 dark:text-orange-400"
@@ -403,17 +448,29 @@ export function CheckInForm() {
             Harassment Scenario
           </button>
         </div>
-        
+
         {isRecording && !isFinishing && (
-          <span className="flex items-center gap-1.5 text-xs text-destructive font-medium animate-pulse">
-            <span className="h-2 w-2 rounded-full bg-destructive" />
-            Transcribing…
-          </span>
+          <div className="flex items-center gap-2 text-xs font-medium text-primary">
+            <LiveWaveform
+              processing
+              height={24}
+              className="w-24"
+              barColor="#253B80"
+              aria-hidden="true"
+            />
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-destructive" />
+              Transcribing…
+            </span>
+          </div>
         )}
       </div>
 
       {status?.message && !status?.success && (
-        <div className="mt-3 rounded-md bg-secondary/60 p-3 text-xs text-muted-foreground" role="status">
+        <div
+          className="mt-3 rounded-md bg-secondary/60 p-3 text-xs text-muted-foreground"
+          role="status"
+        >
           {status.message}
         </div>
       )}
@@ -433,7 +490,8 @@ export function CheckInForm() {
 
       <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
         <span id="check-in-note">
-          Your response is protected and shared only with your assigned support worker. Non-clinical support indicator only.
+          Your response is protected and shared only with your assigned support
+          worker. Non-clinical support indicator only.
         </span>
         <span>{text.length} characters</span>
       </div>

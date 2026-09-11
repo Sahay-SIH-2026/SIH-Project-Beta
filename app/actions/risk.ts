@@ -1,7 +1,7 @@
 "use server";
 
 import { createServerClient } from "@/lib/supabase/server";
-import { getCurrentProfile } from "@/lib/db/profiles";
+import { requireCaseAccess } from "@/lib/auth/case-access";
 import { logAuditEvent } from "@/lib/db/audit";
 import { evaluateCheckIn } from "@/lib/risk";
 import { revalidatePath } from "next/cache";
@@ -17,10 +17,7 @@ export async function markRiskScoreReviewedAction(
   caseId: string
 ): Promise<RiskActionState> {
   try {
-    const profile = await getCurrentProfile();
-    if (!profile || (profile.role !== "COUNSELOR" && profile.role !== "ADMIN")) {
-      return { error: "Unauthorized: only support counselors can verify signals." };
-    }
+    const { profile } = await requireCaseAccess(caseId);
 
     const supabase = await createServerClient();
     const { error } = await supabase
@@ -56,10 +53,7 @@ export async function triggerManualEvaluationAction(
   caseId: string
 ): Promise<RiskActionState> {
   try {
-    const profile = await getCurrentProfile();
-    if (!profile || (profile.role !== "COUNSELOR" && profile.role !== "ADMIN")) {
-      return { error: "Unauthorized: only staff can trigger re-evaluation." };
-    }
+    await requireCaseAccess(caseId);
 
     const supabase = await createServerClient();
     const { data: latestCheckIn } = await supabase
