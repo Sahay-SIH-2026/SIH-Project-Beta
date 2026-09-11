@@ -1,5 +1,5 @@
 /**
- * SAHAY Intervention Engine — Decision-Support Recommendations
+ * LUMA Intervention Engine — Decision-Support Recommendations
  *
  * NOTE: Interventions are strictly suggestions for human counselor review.
  * No intervention is ever triggered autonomously.

@@ -1,4 +1,4 @@
-# SAHAY (सहाय) — Comprehensive System Documentation & User Flow Guide
+# LUMA (LUMA) — Comprehensive System Documentation & User Flow Guide
 
 > **AI-Based Dynamic Mental Health Monitoring & Distress Prediction System for Victims and Complainants**  
 > **SIH-2026 Problem Statement: SIH26094**  
@@ -13,7 +13,7 @@ The Indian criminal justice system processes hundreds of thousands of sensitive 
 
 Traditional institutional support operates on a **reactive, episodic model**: support workers and police personnel only intervene after a crisis has erupted (e.g., suicide attempts, physical attacks, or witness hostility). 
 
-**SAHAY (सहाय)** introduces a paradigm shift: a **proactive, dynamic, support-continuity and early-warning ecosystem**. Operating as an intelligent decision-support bridge between victims and accredited counselors, SAHAY continuously monitors self-reported well-being, linguistic distress markers, multi-channel check-ins, and longitudinal trajectories to detect crisis escalation **days or weeks before catastrophic outcomes occur**.
+**LUMA (LUMA)** introduces a paradigm shift: a **proactive, dynamic, support-continuity and early-warning ecosystem**. Operating as an intelligent decision-support bridge between victims and accredited counselors, LUMA continuously monitors self-reported well-being, linguistic distress markers, multi-channel check-ins, and longitudinal trajectories to detect crisis escalation **days or weeks before catastrophic outcomes occur**.
 
 ```mermaid
 graph TD
@@ -36,9 +36,9 @@ graph TD
 
 ## 2. Essential Product Guardrails & Ethical Boundaries
 
-SAHAY is engineered under strict constitutional, legal, and psychiatric guardrails:
+LUMA is engineered under strict constitutional, legal, and psychiatric guardrails:
 
-1. **Non-Diagnostic Decision Support**: SAHAY produces *Distress Signals* and *Support-Prioritization Indicators*. It **never** issues psychiatric diagnoses (e.g., "Major Depressive Disorder") nor prescribes medication.
+1. **Non-Diagnostic Decision Support**: LUMA produces *Distress Signals* and *Support-Prioritization Indicators*. It **never** issues psychiatric diagnoses (e.g., "Major Depressive Disorder") nor prescribes medication.
 2. **Mandatory Human-in-the-Loop**: The platform **never** executes autonomous sensitive interventions. Relocation orders, police dispatches, and clinical referrals require explicit confirmation by a certified counselor.
 3. **Observed Fact vs. Machine Inference Demarcation**: The system strictly separates verifiable empirical facts (e.g., *"Complainant stated: 'Two men are waiting outside my gate'"*) from algorithmic inferences (e.g., *"Inference: High risk of external physical intimidation"*).
 4. **Privacy-by-Design & Zero-PII Aggregation**: District, state, and national oversight dashboards expose **zero victim Personally Identifiable Information (PII)**. Regulators see aggregated cohort metrics and anonymized reference hashes.
@@ -48,7 +48,7 @@ SAHAY is engineered under strict constitutional, legal, and psychiatric guardrai
 
 ## 3. System Architecture & Component Design
 
-SAHAY is built on a high-throughput, fault-tolerant stack combining Next.js 16 (App Router, Server Components, and Server Actions), PostgreSQL with Row-Level Security (Supabase), Google Gemini 2.5 Flash for multimodal insight generation, and a 100% offline heuristic NLP fallback.
+LUMA is built on a high-throughput, fault-tolerant stack combining Next.js 16 (App Router, Server Components, and Server Actions), PostgreSQL with Row-Level Security (Supabase), Google Gemini 2.5 Flash for multimodal insight generation, and a 100% offline heuristic NLP fallback.
 
 ```mermaid
 flowchart TB
@@ -104,7 +104,7 @@ flowchart TB
 
 ## 4. Target Personas & Role Matrix
 
-| Role | Target User | Primary Motivations | Key Capabilities in SAHAY |
+| Role | Target User | Primary Motivations | Key Capabilities in LUMA |
 |---|---|---|---|
 | **VICTIM** | Complainant, trial witness, POCSO/DV survivor | Safety, emotional validation, non-intrusive support, dignity | Low-friction voice/SMS check-ins, direct counselor link, verified national hotlines, full consent control. |
 | **COUNSELOR** | Certified clinical social worker, NGO counselor | Caseload visibility, identifying high-risk clients before crisis, evidence-based briefings | Longitudinal distress charts, early-warning alerts, AI-generated case briefings, one-click follow-up scheduling. |
@@ -115,7 +115,7 @@ flowchart TB
 
 ## 5. Mathematical Risk & Distress Engine
 
-The SAHAY Risk Engine computes a dynamic, continuous distress score \(S \in [0, 100]\) following each interaction. The scoring is deterministic, explainable, and multi-layered.
+The LUMA Risk Engine computes a dynamic, continuous distress score \(S \in [0, 100]\) following each interaction. The scoring is deterministic, explainable, and multi-layered.
 
 ### 5.1 Raw Signal Calculation
 
@@ -147,7 +147,7 @@ Distress Score Ranges & Operational Severity Bands:
 
 ### 5.2 Longitudinal Trend & Trajectory Calculation
 
-To filter out single-interaction noise and detect genuine trajectories, SAHAY applies a **3-Period Simple Moving Average (SMA)** across historical check-in records:
+To filter out single-interaction noise and detect genuine trajectories, LUMA applies a **3-Period Simple Moving Average (SMA)** across historical check-in records:
 
 \[
 \text{SMA}_t = \frac{S_t + S_{t-1} + S_{t-2}}{3}
@@ -240,7 +240,7 @@ sequenceDiagram
         SMS_API->>RE: Match phone to case V-1043 & evaluate
         RE-->>SMS_API: Distress Score: 55/100, Band: ELEVATED
         SMS_API->>DB: Log interaction & create MEDIUM Alert
-        SMS_API-->>TEL: Auto-reply SMS: "Sahay: Sandesh mil gaya. Counselor jald sampark karenge."
+        SMS_API-->>TEL: Auto-reply SMS: "Luma: Sandesh mil gaya. Counselor jald sampark karenge."
     else Path 2: IVRS Telephony Check-In
         TEL->>D: Scheduled weekly outbound IVRS call
         D->>TEL: Answers call; hears Hindi voice prompt
@@ -418,9 +418,9 @@ STATEWIDE TOTAL:     41                8                12               3.0 hou
 
 ---
 
-## 9. Institutional Demarcation: What SAHAY Does vs. What It Never Does
+## 9. Institutional Demarcation: What LUMA Does vs. What It Never Does
 
-| Domain | What SAHAY Does ✅ | What SAHAY NEVER Does ❌ |
+| Domain | What LUMA Does ✅ | What LUMA NEVER Does ❌ |
 |---|---|---|
 | **Clinical Boundary** | Computes support prioritization signals, linguistic stress markers, and moving-average trajectory indicators. | Never issues clinical diagnostic labels (e.g., ICD-11 / DSM-5) and never prescribes pharmacotherapy. |
 | **Intervention Authority** | Generates decision-support recommendations (e.g., witness protection review, counselor follow-up). | Never autonomously dispatches police, never orders involuntary relocation, and never alters legal case files. |
@@ -431,7 +431,7 @@ STATEWIDE TOTAL:     41                8                12               3.0 hou
 
 ## 10. Verification & Quality Assurance Index
 
-Every subsystem in SAHAY has been tested against automated contract suites and quality gates:
+Every subsystem in LUMA has been tested against automated contract suites and quality gates:
 
 ```bash
 # 1. Verify all 13 REST Application API Contracts
@@ -459,4 +459,4 @@ npm run build
 
 ## 11. Conclusion
 
-**SAHAY (सहाय)** demonstrates that artificial intelligence, when strictly bound by human-in-the-loop oversight and empathetic design, can transform administrative victim support from an episodic crisis-response mechanism into a **continuous safety net**. By lowering the barrier to entry through multi-channel telephony and providing counselors with early-warning signals, SAHAY protects the vulnerable throughout the judicial journey.
+**LUMA (LUMA)** demonstrates that artificial intelligence, when strictly bound by human-in-the-loop oversight and empathetic design, can transform administrative victim support from an episodic crisis-response mechanism into a **continuous safety net**. By lowering the barrier to entry through multi-channel telephony and providing counselors with early-warning signals, LUMA protects the vulnerable throughout the judicial journey.

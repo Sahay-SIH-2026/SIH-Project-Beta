@@ -31,7 +31,7 @@ export default async function VictimCheckInPage() {
   }
 
   return (
-    <div className="sahay-container max-w-2xl py-10">
+    <div className="luma-container max-w-2xl py-10">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-foreground">Today&rsquo;s Check-In</h1>
         <p className="mt-1 text-sm text-muted-foreground">

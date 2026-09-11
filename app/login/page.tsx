@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Sign In — SAHAY",
+  title: "Sign In — LUMA",
   description: "Secure login for victims, counselors, and administrative staff.",
 };
 

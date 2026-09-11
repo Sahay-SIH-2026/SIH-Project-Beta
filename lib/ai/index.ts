@@ -1,5 +1,5 @@
 /**
- * Public exports for SAHAY AI Layer (Phase 6)
+ * Public exports for LUMA AI Layer (Phase 6)
  */
 
 export * from "./types";

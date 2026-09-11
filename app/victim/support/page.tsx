@@ -65,7 +65,7 @@ export default async function VictimSupportPage() {
   }
 
   return (
-    <div className="sahay-container py-8 max-w-3xl">
+    <div className="luma-container py-8 max-w-3xl">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-foreground">Support &amp; Resources</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -79,7 +79,7 @@ export default async function VictimSupportPage() {
           <AlertTriangle className="h-5 w-5 text-red-600" /> If You Are in Immediate Danger
         </div>
         <p className="mt-1.5 text-sm">
-          SAHAY is a periodic well-being support platform, <strong>not an emergency dispatch service</strong>. If you are in immediate physical danger, call <strong>112</strong> or <strong>1091</strong> right away.
+          LUMA is a periodic well-being support platform, <strong>not an emergency dispatch service</strong>. If you are in immediate physical danger, call <strong>112</strong> or <strong>1091</strong> right away.
         </p>
       </div>
 

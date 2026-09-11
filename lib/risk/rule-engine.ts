@@ -1,5 +1,5 @@
 /**
- * SAHAY Rule Engine — Deterministic Support Signal Evaluation
+ * LUMA Rule Engine — Deterministic Support Signal Evaluation
  *
  * Implements transparent, explainable feature extraction and weighted scoring.
  * Outputs decision-support distress prioritization indicators (0–100).

@@ -54,7 +54,7 @@ export default async function VictimDataPage() {
   });
 
   return (
-    <div className="sahay-container py-8 max-w-3xl">
+    <div className="luma-container py-8 max-w-3xl">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-foreground">My Data &amp; Consent</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -103,7 +103,7 @@ export default async function VictimDataPage() {
               <UserCheck className="h-4 w-4 text-primary" /> Human-in-the-Loop
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              SAHAY does not diagnose or make clinical determinations. Any algorithmic signal is strictly for support prioritization and must be reviewed by a human.
+              LUMA does not diagnose or make clinical determinations. Any algorithmic signal is strictly for support prioritization and must be reviewed by a human.
             </p>
           </div>
 

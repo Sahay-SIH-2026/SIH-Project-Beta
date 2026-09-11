@@ -30,7 +30,7 @@ export function VictimNav() {
         aria-label="Victim portal navigation"
         className="hidden border-b border-border bg-white sm:block"
       >
-        <div className="sahay-container flex h-11 items-center justify-between">
+        <div className="luma-container flex h-11 items-center justify-between">
           <div className="flex items-center gap-1">
             {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
               const active = pathname === href || pathname.startsWith(href + "/");

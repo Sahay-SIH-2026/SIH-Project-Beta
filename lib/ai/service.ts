@@ -1,5 +1,5 @@
 /**
- * SAHAY AI Service Boundary (Phase 6)
+ * LUMA AI Service Boundary (Phase 6)
  *
  * Exposes a clean, unified public interface for all GenAI / ML capabilities.
  */

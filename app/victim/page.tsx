@@ -15,7 +15,7 @@ import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Home",
-  description: "Your SAHAY victim support home page.",
+  description: "Your LUMA victim support home page.",
 };
 
 interface VictimCaseInfo {
@@ -67,7 +67,7 @@ export default async function VictimHomePage() {
   }
 
   return (
-    <div className="sahay-container py-8">
+    <div className="luma-container py-8">
       {/* Greeting */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-foreground">

@@ -52,7 +52,7 @@ export default async function VictimCasePage() {
   }
 
   return (
-    <div className="sahay-container py-8 max-w-3xl">
+    <div className="luma-container py-8 max-w-3xl">
       <Link
         href={ROUTES.victim.root}
         className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-4"
@@ -139,7 +139,7 @@ export default async function VictimCasePage() {
           <div className="rounded-lg border border-border bg-secondary/50 p-4 text-xs text-muted-foreground flex items-start gap-2">
             <Info className="h-4 w-4 shrink-0 text-primary mt-0.5" />
             <div>
-              SAHAY ensures continuous care during investigation and trial phases. If your safety is at risk, immediately call <strong>14566</strong> or <strong>1091</strong>.
+              LUMA ensures continuous care during investigation and trial phases. If your safety is at risk, immediately call <strong>14566</strong> or <strong>1091</strong>.
             </div>
           </div>
         </div>

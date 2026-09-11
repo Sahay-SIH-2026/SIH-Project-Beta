@@ -1,5 +1,5 @@
 /**
- * SAHAY GenAI / ML Types & Data Models (Phase 6)
+ * LUMA GenAI / ML Types & Data Models (Phase 6)
  *
  * Enforces strict decision-support and non-clinical framing.
  * Diagnostic labels are prohibited.

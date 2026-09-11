@@ -1,8 +1,8 @@
 /**
- * SAHAY Risk Engine — Core Types
+ * LUMA Risk Engine — Core Types
  *
  * NOTE: All types describe Decision-Support Prioritization Signals.
- * SAHAY does NOT make clinical diagnoses or psychological evaluations.
+ * LUMA does NOT make clinical diagnoses or psychological evaluations.
  */
 
 export type DistressLevel = "STABLE" | "CONCERN" | "ELEVATED" | "CRITICAL";

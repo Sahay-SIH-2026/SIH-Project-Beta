@@ -1,5 +1,5 @@
 /**
- * Comprehensive Diagnostic Test Script for Section 15: SAHAY REST Application APIs
+ * Comprehensive Diagnostic Test Script for Section 15: LUMA REST Application APIs
  *
  * Validates:
  * 1. User & Profile API Contracts
@@ -20,7 +20,7 @@
 import assert from "assert";
 
 console.log("=================================================");
-console.log("  SAHAY SECTION 15: REST APPLICATION API SUITE   ");
+console.log("  LUMA SECTION 15: REST APPLICATION API SUITE   ");
 console.log("=================================================");
 
 // --- Test 1: User & Profile API Contract ---

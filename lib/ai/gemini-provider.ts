@@ -1,5 +1,5 @@
 /**
- * SAHAY Gemini 2.5 Flash Provider (Phase 6)
+ * LUMA Gemini 2.5 Flash Provider (Phase 6)
  *
  * Calls Google Gemini API for structured decision-support case synthesis.
  * Enforces non-clinical framing, fact/inference bifurcation, and schema output.
@@ -17,7 +17,7 @@ interface CaseSynthesisInput {
 }
 
 const GEMINI_SYSTEM_PROMPT = `
-You are SAHAY AI, an advanced decision-support engine assisting certified human counselors supporting victims of crime and domestic distress in India.
+You are LUMA AI, an advanced decision-support engine assisting certified human counselors supporting victims of crime and domestic distress in India.
 
 CRITICAL GUARDRAILS:
 1. NEVER provide medical, psychiatric, or psychological diagnoses (e.g. do not diagnose "Depression", "PTSD", "Bipolar"). Frame all findings strictly as "Distress Prioritization Signals", "Emotional Tone Inferences", or "Support Indicators".

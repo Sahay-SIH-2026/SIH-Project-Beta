@@ -1,7 +1,7 @@
-# SAHAY — Development Journal
+# LUMA — Development Journal
 
 > **What is this file?**
-> This is the **SAHAY Development Journal** — a running log maintained by developers and AI agents working on this project.
+> This is the **LUMA Development Journal** — a running log maintained by developers and AI agents working on this project.
 > Every significant change, fix, decision, or implementation detail is recorded here in reverse-chronological order (newest first).
 > This file is **not a changelog** (that lives in `CHANGELOG.md` when created); it is a narrative record explaining *what* was changed, *why* it was changed, and *how* it was implemented. When debugging or onboarding, start here.
 
@@ -21,6 +21,22 @@ Each entry follows this template:
 ---
 
 ## Entries
+
+---
+
+### 2026-09-11 — Rebrand application to LUMA
+**Type:** Refactor | Documentation
+**Files changed:** Application metadata, UI copy, CSS utility naming, API health metadata, package metadata, demo domains, Supabase seed/repair files, documentation, and project guidance.
+**Status:** ✅ Done — standalone product branding renamed to LUMA; Hindi support-response text intentionally preserved.
+
+#### What changed
+
+- Replaced the product name, titles, descriptions, comments, and documentation references with `LUMA`.
+- Renamed the former brand container utility to `luma-container`.
+- Updated demo email domains to `luma.org`.
+- Renamed the comprehensive documentation file to `LUMA_COMPREHENSIVE_DOCUMENTATION.md`.
+- Updated package, health-check, SQL, seed, diagnostic script, and license metadata.
+- Removed stale `.next` build output so generated artifacts no longer contain the former brand.
 
 ---
 
@@ -436,7 +452,7 @@ Implemented the complete end-to-end Phase 4 Core Workflow across Victim, Counsel
 
 #### Problem
 
-Attempting to log in with any demo account (`admin@sahay.org`, `counselor@sahay.org`, `victim1@demo.sahay.org`) via `/login` returned:
+Attempting to log in with any demo account (`admin@luma.org`, `counselor@luma.org`, `victim1@demo.luma.org`) via `/login` returned:
 
 ```text
 500: Database error querying schema
@@ -556,9 +572,9 @@ npm run test:login
 
 Expected output after the fix:
 ```text
-Testing [ADMIN] (admin@sahay.org)...       ✅ SUCCESS!
-Testing [COUNSELOR] (counselor@sahay.org)... ✅ SUCCESS!
-Testing [VICTIM] (victim1@demo.sahay.org)... ✅ SUCCESS!
+Testing [ADMIN] (admin@luma.org)...       ✅ SUCCESS!
+Testing [COUNSELOR] (counselor@luma.org)... ✅ SUCCESS!
+Testing [VICTIM] (victim1@demo.luma.org)... ✅ SUCCESS!
 ```
 
 #### How to Reproduce Before the Fix

@@ -1,5 +1,5 @@
 /**
- * SAHAY Trend Calculator — Longitudinal Signal Analysis
+ * LUMA Trend Calculator — Longitudinal Signal Analysis
  */
 
 import type { TrendDirection } from "./types";

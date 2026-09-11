@@ -1,5 +1,5 @@
 /**
- * SAHAY Multilingual Lexicon & Language Detection (Phase 6)
+ * LUMA Multilingual Lexicon & Language Detection (Phase 6)
  *
  * Supports English, Devanagari Hindi (हिन्दी), and Hinglish (Latin-script colloquial Hindi).
  */

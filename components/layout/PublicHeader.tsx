@@ -8,11 +8,11 @@ import { APP_NAME } from "@/lib/constants";
 export function PublicHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="sahay-container flex h-14 items-center justify-between">
+      <div className="luma-container flex h-14 items-center justify-between">
         <Link
           href="/"
           className="flex items-center gap-2 no-underline"
-          aria-label="SAHAY — Home"
+          aria-label="LUMA — Home"
         >
           {/* Simple wordmark — no government seals */}
           <span className="text-lg font-bold tracking-wide text-primary">

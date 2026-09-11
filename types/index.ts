@@ -1,5 +1,5 @@
 /**
- * SAHAY — Core Type Contracts
+ * LUMA — Core Type Contracts
  *
  * These are placeholder interfaces that define the shape of the domain model.
  * They are intentionally NOT connected to a database.

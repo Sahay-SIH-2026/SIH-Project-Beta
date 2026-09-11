@@ -1,5 +1,5 @@
 /**
- * SAHAY Local NLP & Heuristic ML Engine (Phase 6)
+ * LUMA Local NLP & Heuristic ML Engine (Phase 6)
  *
  * Provides offline-capable, zero-network, deterministic natural language processing,
  * sentiment classification, emotion recognition, and 72-hour escalation forecasting.

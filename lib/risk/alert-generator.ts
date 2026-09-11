@@ -1,5 +1,5 @@
 /**
- * SAHAY Alert Generator — Early-Warning Thresholds & De-duplication
+ * LUMA Alert Generator — Early-Warning Thresholds & De-duplication
  */
 
 import { createServerClient } from "@/lib/supabase/server";

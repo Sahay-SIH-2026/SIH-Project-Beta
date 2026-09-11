@@ -1,5 +1,5 @@
 /**
- * SAHAY Risk Engine — Public Facade
+ * LUMA Risk Engine — Public Facade
  */
 
 import { createServerClient } from "@/lib/supabase/server";

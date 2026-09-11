@@ -1,4 +1,4 @@
-# SAHAY — SIH26094 Implementation Checklist
+# LUMA — SIH26094 Implementation Checklist
 
 > AI-based Dynamic Mental Health Monitoring and Distress Prediction System for victims and complainants.
 
@@ -12,7 +12,7 @@
 ---
 
 ## 0. Product Guardrails
-- [x] Define SAHAY as a support-continuity and early-warning system, not a diagnostic system.
+- [x] Define LUMA as a support-continuity and early-warning system, not a diagnostic system.
 - [x] Use Distress Signal / Risk Signal terminology rather than claiming clinical diagnosis.
 - [x] Keep a human-in-the-loop for alerts, escalation, and interventions.
 - [x] Define consent, withdrawal, data minimization, retention, and access rules. *(Consent table schema done; UI consent workflow at `/victim/data`)*
@@ -522,7 +522,7 @@ Do NOT make these MVP blockers:
 - [x] Real IVRS infrastructure. *(not required for MVP)*
 - [x] National-scale infrastructure. *(not required for MVP)*
 - [x] Perfect emotion recognition. *(not required for MVP)*
-- [x] Clinical diagnosis. *(explicitly excluded — SAHAY is a decision-support tool)*
+- [x] Clinical diagnosis. *(explicitly excluded — LUMA is a decision-support tool)*
 - [x] Fully autonomous intervention. *(explicitly excluded — human-in-the-loop required)*
 
 Build the end-to-end intelligence workflow first. Integrations can sit behind mocks/adapters until real access exists.

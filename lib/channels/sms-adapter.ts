@@ -59,9 +59,9 @@ export async function ingestInboundSMS(payload: SMSPayload): Promise<ChannelInge
   if (upper === "1" || upper === "OK" || upper === "SAFE" || upper === "THEEK") {
     processedText = "Main theek hoon. Sab surakshit hai. (Quick SMS reply: 1 / Safe)";
   } else if (upper === "2" || upper === "HELP" || upper === "MADAD") {
-    processedText = "Mujhe sahayata ki zaroorat hai. Kripya mujhse sampark karein. (Quick SMS reply: 2 / Help)";
+    processedText = "Mujhe madad ki zaroorat hai. Kripya mujhse sampark karein. (Quick SMS reply: 2 / Help)";
   } else if (upper === "911" || upper === "URGENT" || upper === "KHATRA" || upper === "DANGER") {
-    processedText = "EMERGENCY: Turant sahayata chahiye! Darr aur khatra mehsoos ho raha hai! (Quick SMS reply: Urgent)";
+    processedText = "EMERGENCY: Turant madad chahiye! Darr aur khatra mehsoos ho raha hai! (Quick SMS reply: Urgent)";
   }
 
   // 3. Insert Check-In record

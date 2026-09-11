@@ -1,6 +1,6 @@
-# Contributing to SAHAY
+# Contributing to LUMA
 
-Thank you for contributing to SAHAY. Please read this guide before opening a pull request.
+Thank you for contributing to LUMA. Please read this guide before opening a pull request.
 
 ---
 
@@ -8,7 +8,7 @@ Thank you for contributing to SAHAY. Please read this guide before opening a pul
 
 ```bash
 # 1. Clone the repository
-git clone git@github.com:Sahay-SIH-2026/SIH-Project-Beta.git
+git clone git@github.com:Luma-SIH-2026/SIH-Project-Beta.git
 cd SIH-Project-Beta
 
 # 2. Install dependencies
@@ -75,9 +75,9 @@ If you accidentally commit sensitive data, notify the maintainers immediately an
 
 ## Product Safety
 
-SAHAY is a support-tool for human counselors — not an autonomous system.
+LUMA is a support-tool for human counselors — not an autonomous system.
 
-Contributors must **not** add functionality that turns SAHAY into:
+Contributors must **not** add functionality that turns LUMA into:
 
 - an autonomous counseling system
 - a clinical diagnostic or mental-health assessment tool

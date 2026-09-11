@@ -1,9 +1,9 @@
 /**
- * SAHAY Application Constants
+ * LUMA Application Constants
  * @phase 1 — Skeleton
  */
 
-export const APP_NAME = "SAHAY" as const;
+export const APP_NAME = "LUMA" as const;
 export const APP_TAGLINE = "Victim Support & Well-being Continuity Platform" as const;
 export const APP_DESCRIPTION =
   "A human-centered platform that helps authorized support workers identify changing support needs over time." as const;

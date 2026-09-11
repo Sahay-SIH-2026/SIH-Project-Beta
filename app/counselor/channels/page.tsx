@@ -101,7 +101,7 @@ export default async function CounselorChannelsPage() {
         </div>
         <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
           Victims in rural or marginalized conditions often lack high-speed internet, smartphones, or English literacy.
-          SAHAY&apos;s Multi-Channel Gateway guarantees support continuity by ingesting signals from feature phones via automated IVRS calls, SMS shortcodes, and direct 14566 telephonic helpline referrals. Every incoming interaction is normalized and piped through the <strong>Phase 5 & 6 Multilingual Risk Engine</strong> to update longitudinal trajectories and trigger early-warning alerts.
+          LUMA&apos;s Multi-Channel Gateway guarantees support continuity by ingesting signals from feature phones via automated IVRS calls, SMS shortcodes, and direct 14566 telephonic helpline referrals. Every incoming interaction is normalized and piped through the <strong>Phase 5 & 6 Multilingual Risk Engine</strong> to update longitudinal trajectories and trigger early-warning alerts.
         </p>
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">

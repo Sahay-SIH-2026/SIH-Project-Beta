@@ -27,9 +27,9 @@ if (!url || !key) {
 const supabase = createClient(url, key);
 
 const ACCOUNTS = [
-  { role: "ADMIN", email: "admin@sahay.org", password: "Password123!" },
-  { role: "COUNSELOR", email: "counselor@sahay.org", password: "Password123!" },
-  { role: "VICTIM", email: "victim1@demo.sahay.org", password: "Password123!" },
+  { role: "ADMIN", email: "admin@luma.org", password: "Password123!" },
+  { role: "COUNSELOR", email: "counselor@luma.org", password: "Password123!" },
+  { role: "VICTIM", email: "victim1@demo.luma.org", password: "Password123!" },
 ];
 
 async function testAccounts() {

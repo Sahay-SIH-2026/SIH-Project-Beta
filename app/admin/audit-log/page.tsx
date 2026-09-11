@@ -26,7 +26,7 @@ export default async function AdminAuditLogPage() {
   return (
     <div>
       <div className="mb-5 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        <strong>Immutable Audit Log:</strong> Chronological, tamper-evident record of all sensitive operations across the SAHAY platform.
+        <strong>Immutable Audit Log:</strong> Chronological, tamper-evident record of all sensitive operations across the LUMA platform.
       </div>
 
       <h1 className="text-2xl font-semibold text-foreground">System Audit Log</h1>

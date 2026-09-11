@@ -1,4 +1,4 @@
-# SAHAY — AI-Based Dynamic Mental Health Monitoring & Distress Prediction System
+# LUMA — AI-Based Dynamic Mental Health Monitoring & Distress Prediction System
 
 > **SIH-2026 Problem Statement SIH26094**  
 > AI-based Dynamic Mental Health Monitoring and Distress Prediction System for victims and complainants.  
@@ -6,13 +6,13 @@
 
 ---
 
-## What is SAHAY?
+## What is LUMA?
 
-**SAHAY** (सहाय) is an AI-powered, human-in-the-loop **support-continuity and early-warning platform** designed to monitor the well-being and distress trajectories of victims and complainants over time. By combining **multilingual natural language processing (Hindi, Hinglish, and English)**, **dynamic longitudinal risk modeling**, and **inclusive last-mile communication channels (Web Speech-to-Text, basic feature-phone SMS, IVRS telephony, and National Helpline 14566 intake)**, SAHAY ensures that emerging crises are caught early and addressed by dedicated human support workers.
+**LUMA** (LUMA) is an AI-powered, human-in-the-loop **support-continuity and early-warning platform** designed to monitor the well-being and distress trajectories of victims and complainants over time. By combining **multilingual natural language processing (Hindi, Hinglish, and English)**, **dynamic longitudinal risk modeling**, and **inclusive last-mile communication channels (Web Speech-to-Text, basic feature-phone SMS, IVRS telephony, and National Helpline 14566 intake)**, LUMA ensures that emerging crises are caught early and addressed by dedicated human support workers.
 
 ### Essential Product Guardrails & Ethical Boundaries
 
-- **Support-Prioritisation Only**: SAHAY produces *Distress Signals* and *Support-Prioritization Indicators* — it does **not** make clinical psychiatric diagnoses or prescribe treatment.
+- **Support-Prioritisation Only**: LUMA produces *Distress Signals* and *Support-Prioritization Indicators* — it does **not** make clinical psychiatric diagnoses or prescribe treatment.
 - **Human-in-the-Loop Safeguard**: The system **never** triggers autonomous sensitive interventions (such as police relocation or involuntary hospitalization). Recommendations are advisory aids requiring counselor confirmation.
 - **Observed Fact vs. Machine Inference Demarcation**: The system strictly separates verifiable facts (logged quotes, direct occurrences) from algorithmic hypotheses.
 - **Privacy-by-Design (DPDP Act & Victim Protection)**: Authority and district dashboards aggregate data with **zero victim-level PII** (no names, phones, or verbatim text exposed).
@@ -120,8 +120,8 @@ For fast, high-impact demonstrations to SIH judges, navigate to **Demo Studio** 
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-team/sahay.git
-cd sahay
+git clone https://github.com/your-team/luma.git
+cd luma
 
 # Install dependencies
 npm install
@@ -164,10 +164,10 @@ Pre-configured synthetic accounts for judging (passwords: `Password123!`):
 
 | Role | Email | Purpose |
 |---|---|---|
-| **Counselor** | `counselor@sahay.org` | Caseload triage, alerts, AI insights, Demo Studio |
-| **Admin** | `admin@sahay.org` | Workload assignments, system metrics, audit logs |
-| **Victim 1** | `victim1@demo.sahay.org` | Complainant Aarohi (`V-1042`), check-in submissions |
-| **Victim 2** | `victim2@demo.sahay.org` | Complainant Deepa (`V-1043`) |
+| **Counselor** | `counselor@luma.org` | Caseload triage, alerts, AI insights, Demo Studio |
+| **Admin** | `admin@luma.org` | Workload assignments, system metrics, audit logs |
+| **Victim 1** | `victim1@demo.luma.org` | Complainant Aarohi (`V-1042`), check-in submissions |
+| **Victim 2** | `victim2@demo.luma.org` | Complainant Deepa (`V-1043`) |
 
 ---
 

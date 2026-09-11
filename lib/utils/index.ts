@@ -1,5 +1,5 @@
 /**
- * SAHAY Utility Functions
+ * LUMA Utility Functions
  * @phase 1 — Skeleton
  */
 

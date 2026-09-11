@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SAHAY — Fix Supabase Auth Schema & Seed Users
+-- LUMA — Fix Supabase Auth Schema & Seed Users
 --
 -- PURPOSE:
 -- Fixes the "500: Database error querying schema" error during login.

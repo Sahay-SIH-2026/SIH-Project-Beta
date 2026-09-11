@@ -9,7 +9,7 @@ import { VictimNav } from "@/components/navigation/VictimNav";
 export const metadata: Metadata = {
   title: {
     default: "Victim Portal",
-    template: "%s | Victim Portal | SAHAY",
+    template: "%s | Victim Portal | LUMA",
   },
 };
 

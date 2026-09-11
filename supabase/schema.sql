@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SAHAY — Database Schema (Phase 2)
+-- LUMA — Database Schema (Phase 2)
 -- Victim Support & Well-being Continuity Platform
 -- Target: PostgreSQL / Supabase
 -- ==============================================================================

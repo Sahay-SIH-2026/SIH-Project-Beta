@@ -1,5 +1,5 @@
 /**
- * Diagnostic test script for SAHAY Hackathon Demo Scenarios & Official Analytics
+ * Diagnostic test script for LUMA Hackathon Demo Scenarios & Official Analytics
  */
 
 import assert from "assert";

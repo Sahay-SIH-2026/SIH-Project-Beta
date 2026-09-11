@@ -1,6 +1,6 @@
 /**
 -- ==============================================================================
--- SAHAY — Database TypeScript Types (Phase 2)
+-- LUMA — Database TypeScript Types (Phase 2)
 -- Strongly-typed mapping of Supabase PostgreSQL public schema
 -- ==============================================================================
 */

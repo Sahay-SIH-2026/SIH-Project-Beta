@@ -8,7 +8,7 @@ import { AdminNav } from "@/components/navigation/AdminNav";
 export const metadata: Metadata = {
   title: {
     default: "Admin Portal",
-    template: "%s | Admin Portal | SAHAY",
+    template: "%s | Admin Portal | LUMA",
   },
 };
 

@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SAHAY — Synthetic Seed Data (Phase 2)
+-- LUMA — Synthetic Seed Data (Phase 2)
 -- NOTE: ALL DATA IN THIS FILE IS SYNTHETIC FOR TESTING AND DEMONSTRATION.
 -- NO REAL VICTIM OR CLIENT IDENTIFYING INFORMATION IS CONTAINED HEREIN.
 -- ==============================================================================
@@ -18,7 +18,7 @@ values
     '00000000-0000-0000-0000-000000000000',
     'authenticated',
     'authenticated',
-    'counselor@sahay.org',
+    'counselor@luma.org',
     crypt('Password123!', gen_salt('bf')),
     now(),
     '{"provider": "email", "providers": ["email"], "role": "COUNSELOR"}',
@@ -32,7 +32,7 @@ values
     '00000000-0000-0000-0000-000000000000',
     'authenticated',
     'authenticated',
-    'victim1@demo.sahay.org',
+    'victim1@demo.luma.org',
     crypt('Password123!', gen_salt('bf')),
     now(),
     '{"provider": "email", "providers": ["email"], "role": "VICTIM"}',
@@ -46,7 +46,7 @@ values
     '00000000-0000-0000-0000-000000000000',
     'authenticated',
     'authenticated',
-    'victim2@demo.sahay.org',
+    'victim2@demo.luma.org',
     crypt('Password123!', gen_salt('bf')),
     now(),
     '{"provider": "email", "providers": ["email"], "role": "VICTIM"}',
@@ -60,7 +60,7 @@ values
     '00000000-0000-0000-0000-000000000000',
     'authenticated',
     'authenticated',
-    'victim3@demo.sahay.org',
+    'victim3@demo.luma.org',
     crypt('Password123!', gen_salt('bf')),
     now(),
     '{"provider": "email", "providers": ["email"], "role": "VICTIM"}',
@@ -74,7 +74,7 @@ values
     '00000000-0000-0000-0000-000000000000',
     'authenticated',
     'authenticated',
-    'victim4@demo.sahay.org',
+    'victim4@demo.luma.org',
     crypt('Password123!', gen_salt('bf')),
     now(),
     '{"provider": "email", "providers": ["email"], "role": "VICTIM"}',
@@ -88,7 +88,7 @@ values
     '00000000-0000-0000-0000-000000000000',
     'authenticated',
     'authenticated',
-    'admin@sahay.org',
+    'admin@luma.org',
     crypt('Password123!', gen_salt('bf')),
     now(),
     '{"provider": "email", "providers": ["email"], "role": "ADMIN"}',
@@ -113,12 +113,12 @@ insert into auth.identities (
   id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at
 )
 values
-  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '{"sub": "00000000-0000-0000-0000-000000000001", "email": "counselor@sahay.org"}', 'email', now(), now(), now()),
-  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '{"sub": "00000000-0000-0000-0000-000000000002", "email": "victim1@demo.sahay.org"}', 'email', now(), now(), now()),
-  ('00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000003', '{"sub": "00000000-0000-0000-0000-000000000003", "email": "victim2@demo.sahay.org"}', 'email', now(), now(), now()),
-  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000004', '{"sub": "00000000-0000-0000-0000-000000000004", "email": "victim3@demo.sahay.org"}', 'email', now(), now(), now()),
-  ('00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000005', '{"sub": "00000000-0000-0000-0000-000000000005", "email": "victim4@demo.sahay.org"}', 'email', now(), now(), now()),
-  ('00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000006', '{"sub": "00000000-0000-0000-0000-000000000006", "email": "admin@sahay.org"}', 'email', now(), now(), now())
+  ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', '{"sub": "00000000-0000-0000-0000-000000000001", "email": "counselor@luma.org"}', 'email', now(), now(), now()),
+  ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '{"sub": "00000000-0000-0000-0000-000000000002", "email": "victim1@demo.luma.org"}', 'email', now(), now(), now()),
+  ('00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000003', '{"sub": "00000000-0000-0000-0000-000000000003", "email": "victim2@demo.luma.org"}', 'email', now(), now(), now()),
+  ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000004', '{"sub": "00000000-0000-0000-0000-000000000004", "email": "victim3@demo.luma.org"}', 'email', now(), now(), now()),
+  ('00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000005', '{"sub": "00000000-0000-0000-0000-000000000005", "email": "victim4@demo.luma.org"}', 'email', now(), now(), now()),
+  ('00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000006', '{"sub": "00000000-0000-0000-0000-000000000006", "email": "admin@luma.org"}', 'email', now(), now(), now())
 on conflict (id) do nothing;
 
 -- 2. Upsert Profiles

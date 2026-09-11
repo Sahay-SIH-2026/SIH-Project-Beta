@@ -56,7 +56,7 @@ export default function HomePage() {
           aria-labelledby="hero-heading"
           className="border-b border-border bg-primary py-16 sm:py-24"
         >
-          <div className="sahay-container text-center">
+          <div className="luma-container text-center">
             {/* Dev prototype badge */}
             <p className="mb-6 inline-block rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-300">
               Phase 1 Prototype — For Development Review Only
@@ -79,7 +79,7 @@ export default function HomePage() {
 
             {/* Disclaimer strip */}
             <p className="mx-auto mt-8 max-w-xl rounded-md border border-white/10 bg-white/5 px-4 py-3 text-xs text-white/50">
-              SAHAY supports human counselors — it does not replace them. All
+              LUMA supports human counselors — it does not replace them. All
               support-prioritisation signals require mandatory human review.
             </p>
           </div>
@@ -88,7 +88,7 @@ export default function HomePage() {
         {/* Portal navigation cards */}
         <section
           aria-labelledby="portals-heading"
-          className="sahay-container py-14"
+          className="luma-container py-14"
         >
           <h2
             id="portals-heading"
@@ -138,18 +138,18 @@ export default function HomePage() {
 
         {/* About strip */}
         <section className="border-t border-border bg-secondary/40 py-10">
-          <div className="sahay-container max-w-3xl text-center">
+          <div className="luma-container max-w-3xl text-center">
             <h2 className="text-base font-semibold text-foreground">
-              What is SAHAY?
+              What is LUMA?
             </h2>
             <p className="mt-3 text-sm text-muted-foreground">
-              SAHAY is a platform designed to help authorised support workers
+              LUMA is a platform designed to help authorised support workers
               track changing well-being needs over time. It surfaces
               support-prioritisation signals — not clinical diagnoses — and
               always requires a human counsellor to review and act.
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              SAHAY is not a replacement for police, courts, counsellors, or
+              LUMA is not a replacement for police, courts, counsellors, or
               emergency services. It does not provide autonomous counselling.
             </p>
           </div>

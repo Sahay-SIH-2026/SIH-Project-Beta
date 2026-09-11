@@ -1,5 +1,5 @@
 /**
- * Diagnostic test script for SAHAY Multi-Channel Ingestion & STT
+ * Diagnostic test script for LUMA Multi-Channel Ingestion & STT
  */
 
 import assert from "assert";
@@ -75,10 +75,10 @@ function parseSmsShortcode(rawText) {
     return { type: "SAFE", text: "Main theek hoon. Sab surakshit hai." };
   }
   if (upper === "2" || upper === "HELP" || upper === "MADAD") {
-    return { type: "HELP", text: "Mujhe sahayata ki zaroorat hai. Kripya mujhse sampark karein." };
+    return { type: "HELP", text: "Mujhe madad ki zaroorat hai. Kripya mujhse sampark karein." };
   }
   if (upper === "911" || upper === "URGENT" || upper === "KHATRA") {
-    return { type: "EMERGENCY", text: "EMERGENCY: Turant sahayata chahiye!" };
+    return { type: "EMERGENCY", text: "EMERGENCY: Turant madad chahiye!" };
   }
   return { type: "FREE_TEXT", text: rawText };
 }

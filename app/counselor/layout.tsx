@@ -8,7 +8,7 @@ import { CounselorNav } from "@/components/navigation/CounselorNav";
 export const metadata: Metadata = {
   title: {
     default: "Counselor Portal",
-    template: "%s | Counselor Portal | SAHAY",
+    template: "%s | Counselor Portal | LUMA",
   },
 };
 
