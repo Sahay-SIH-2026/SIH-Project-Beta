@@ -7,6 +7,7 @@ import { getAuditLogs } from "@/lib/db/audit";
 import { formatDate } from "@/lib/utils";
 import type { AuditLogRow } from "@/types/database.types";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Audit Log" };
 
 type AuditLogWithActor = AuditLogRow & {

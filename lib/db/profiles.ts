@@ -1,10 +1,11 @@
+import { cache } from "react";
 import { createServerClient } from "@/lib/supabase/server";
 import type { Database, UserRole } from "@/types/database.types";
 
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
 
-export async function getCurrentProfile() {
+export const getCurrentProfile = cache(async () => {
   const supabase = await createServerClient();
   const {
     data: { user },
@@ -21,9 +22,9 @@ export async function getCurrentProfile() {
 
   if (error) throw error;
   return data;
-}
+});
 
-export async function getProfileById(id: string) {
+export const getProfileById = cache(async (id: string) => {
   const supabase = await createServerClient();
   const { data, error } = await supabase
     .from("profiles")
@@ -33,7 +34,7 @@ export async function getProfileById(id: string) {
 
   if (error) throw error;
   return data;
-}
+});
 
 export async function listProfilesByRole(role: UserRole) {
   const supabase = await createServerClient();

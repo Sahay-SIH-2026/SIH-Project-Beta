@@ -2,9 +2,12 @@
  * /counselor/cases/[id] — Case Details & Clinical Continuity Workspace
  */
 
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 import { getCaseById } from "@/lib/db/cases";
 import { requireCaseAccess } from "@/lib/auth/case-access";
 import { getCheckInsByCaseId } from "@/lib/db/check-ins";
@@ -88,13 +91,6 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
   } catch (err) {
     console.error("Error loading case details:", err);
     notFound();
-  }
-
-  let aiInsights: AIInsightsResult | null = null;
-  try {
-    aiInsights = await generateCaseInsights(id);
-  } catch (e) {
-    console.error("Error generating initial AI insights:", e);
   }
 
   const victim = caseItem.victim as { id: string; display_name: string } | null;
@@ -308,8 +304,10 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
             <CaseFollowUpManager caseId={caseItem.id} initialFollowUps={followUps} />
           </div>
 
-          {/* GenAI Clinical Decision Support Dossier */}
-          <AIInsightsCard caseId={caseItem.id} initialInsights={aiInsights} />
+          {/* GenAI Clinical Decision Support Dossier (Streamed via Suspense) */}
+          <Suspense fallback={<AIInsightsSkeleton />}>
+            <AsyncAIInsightsSection caseId={caseItem.id} />
+          </Suspense>
 
           {/* Longitudinal Support Trajectory Chart */}
           <div className="rounded-lg border border-border bg-card p-5 shadow-sm space-y-3">
@@ -328,4 +326,32 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
       </div>
     </div>
   );
+}
+
+function AIInsightsSkeleton() {
+  return (
+    <div className="rounded-lg border border-border bg-card p-5 shadow-sm space-y-4 animate-pulse">
+      <div className="flex items-center justify-between">
+        <div className="h-5 w-48 rounded bg-muted" />
+        <div className="h-6 w-24 rounded-full bg-muted" />
+      </div>
+      <div className="h-16 rounded-md bg-muted/40" />
+      <div className="grid grid-cols-3 gap-3">
+        <div className="h-12 rounded bg-muted/30" />
+        <div className="h-12 rounded bg-muted/30" />
+        <div className="h-12 rounded bg-muted/30" />
+      </div>
+    </div>
+  );
+}
+
+async function AsyncAIInsightsSection({ caseId }: { caseId: string }) {
+  let aiInsights: AIInsightsResult | null = null;
+  try {
+    aiInsights = await generateCaseInsights(caseId);
+  } catch (e) {
+    console.error("Error generating streamed AI insights:", e);
+  }
+
+  return <AIInsightsCard caseId={caseId} initialInsights={aiInsights} />;
 }

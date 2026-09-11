@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createServerClient } from "@/lib/supabase/server";
 import type { Database, CaseStatus } from "@/types/database.types";
 
@@ -31,7 +32,7 @@ export async function getCases(filters?: {
   return data;
 }
 
-export async function getCaseById(id: string) {
+export const getCaseById = cache(async (id: string) => {
   const supabase = await createServerClient();
   const { data, error } = await supabase
     .from("cases")
@@ -41,7 +42,7 @@ export async function getCaseById(id: string) {
 
   if (error) throw error;
   return data;
-}
+});
 
 export async function getCaseByRef(caseRef: string) {
   const supabase = await createServerClient();

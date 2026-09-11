@@ -14,6 +14,7 @@ import { CreateVictimForm } from "@/components/management/CreateVictimForm";
 
 import type { CaseStatus } from "@/types/database.types";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Cases" };
 
 const STATUS_BADGES: Record<string, string> = {

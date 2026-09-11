@@ -1,5 +1,5 @@
 import { getCurrentProfile } from "@/lib/db/profiles";
-import { createServerClient } from "@/lib/supabase/server";
+import { getCaseById } from "@/lib/db/cases";
 
 /**
  * Enforces the application-side counterpart to the cases RLS policies.
@@ -12,14 +12,9 @@ export async function requireCaseAccess(caseId: string) {
     throw new Error("Forbidden: you are not authorized to access this case.");
   }
 
-  const supabase = await createServerClient();
-  const { data: caseRecord, error } = await supabase
-    .from("cases")
-    .select("id, counselor_id")
-    .eq("id", caseId)
-    .maybeSingle();
+  const caseRecord = await getCaseById(caseId).catch(() => null);
 
-  if (error || !caseRecord) {
+  if (!caseRecord) {
     throw new Error("Forbidden: you are not authorized to access this case.");
   }
 
