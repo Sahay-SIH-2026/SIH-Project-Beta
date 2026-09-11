@@ -61,9 +61,6 @@ export function CreateVictimForm({ isAdmin, counselors = [] }: CreateVictimFormP
               ? "Generate a new victim profile and assign a case." 
               : "Onboard a new victim directly into your caseload."}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Default login password: <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">Password123!</code>
-          </p>
         </div>
         <button
           onClick={() => setIsOpen(false)}

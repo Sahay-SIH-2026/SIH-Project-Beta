@@ -24,17 +24,6 @@ Each entry follows this template:
 
 ---
 
-### 2026-09-11 — Make new victim credentials explicit
-**Type:** UX | Documentation
-**Files changed:** `components/management/CreateVictimForm.tsx`, `JOURNAL.md`
-**Status:** ✅ Done
-
-- Confirmed the account-creation action provisions every new synthetic victim with the demo password `Password123!` in Supabase Auth.
-- Added a visible default-password note to the victim-creation form, so the staff member creating the account can give the victim their initial login credentials immediately.
-- This fixed demo password is for the synthetic hackathon environment only; a production workflow must use a one-time setup or password-reset flow.
-
----
-
 ### 2026-09-11 — Enforce counsellor assignment boundaries
 **Type:** Security | Bug Fix
 **Files changed:** `app/counselor/page.tsx`, `app/counselor/cases/page.tsx`, `app/counselor/cases/[id]/page.tsx`, `lib/auth/case-access.ts`, `app/actions/cases.ts`, `app/actions/interactions.ts`, `app/actions/follow-ups.ts`, `app/actions/risk.ts`, `supabase/schema.sql`, `supabase/migrations/20260908000000_initial_schema.sql`, `supabase/migrations/20260911000000_enforce_counselor_case_scope.sql`
