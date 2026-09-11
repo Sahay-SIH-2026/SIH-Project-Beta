@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { submitCheckInAction } from "@/app/actions/check-ins";
 import {
   CheckCircle2,
@@ -11,32 +12,8 @@ import {
   Mic,
   MicOff,
   Volume2,
-  Sparkles,
 } from "lucide-react";
-import { generateMockVoiceTranscript } from "@/lib/channels/stt";
-
-// TypeScript declaration for Web Speech API
-interface SpeechRecognitionEventLike {
-  results: {
-    [index: number]: {
-      [index: number]: {
-        transcript: string;
-      };
-    };
-  };
-}
-
-interface SpeechRecognitionLike {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  start: () => void;
-  stop: () => void;
-  abort: () => void;
-  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
-  onerror: ((event: { error: string }) => void) | null;
-  onend: (() => void) | null;
-}
+import Vapi from "@vapi-ai/web";
 
 export function CheckInForm() {
   const [text, setText] = useState("");
@@ -51,15 +28,19 @@ export function CheckInForm() {
     message?: string;
   } | null>(null);
 
-  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const vapiRef = useRef<InstanceType<typeof Vapi> | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const baselineTextRef = useRef<string>("");
 
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
-      if (recognitionRef.current) {
+      if (vapiRef.current) {
         try {
-          recognitionRef.current.abort();
+          if (typeof vapiRef.current.removeAllListeners === "function") {
+            vapiRef.current.removeAllListeners();
+          }
+          vapiRef.current.stop();
         } catch {
           // ignore cleanup errors
         }
@@ -71,67 +52,179 @@ export function CheckInForm() {
     setStatus(null);
     if (typeof window === "undefined") return;
 
-    const SpeechRecognition =
-      (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionLike }).SpeechRecognition ||
-      (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionLike }).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      // Fallback if browser doesn't have native STT: simulate voice input
-      loadSampleVoiceCheckIn("distressed_hindi");
-      return;
-    }
+    // Anchor the current text so partial transcripts can append cleanly without repeating what's already there
+    baselineTextRef.current = text.trim();
 
     try {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = selectedLang;
+      let vapi = vapiRef.current;
 
-      recognition.onresult = (event: SpeechRecognitionEventLike) => {
-        let currentTranscript = "";
-        for (let i = 0; i < Object.keys(event.results).length; i++) {
-          const item = event.results[i];
-          if (item && item[0]) {
-            currentTranscript += item[0].transcript + " ";
+      const publicKey = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
+      if (!publicKey) {
+        setStatus({ error: "Voice integration is not configured properly." });
+        return;
+      }
+
+      if (!vapi) {
+        // Only instantiate the SDK once per component lifecycle to prevent daily-js leaks
+        vapi = new Vapi(publicKey);
+        vapiRef.current = vapi;
+      } else {
+        vapi.stop();
+        if (typeof vapi.removeAllListeners === "function") {
+          vapi.removeAllListeners();
+        }
+      }
+
+      vapi.on("call-start", () => {
+        setIsRecording(true);
+        setStatus({ message: "Your voice is being converted to text…" });
+        setRecordingSeconds(0);
+
+        // Mute the assistant locally so the victim only experiences the UI transcription, not the synthetic voice
+        vapi.setVolume(0);
+
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = setInterval(() => {
+          setRecordingSeconds((sec) => sec + 1);
+        }, 1000);
+      });
+
+      vapi.on("call-end", () => {
+        setIsRecording(false);
+        setStatus({ message: "Voice input stopped." });
+        if (timerRef.current) clearInterval(timerRef.current);
+      });
+
+      vapi.on("error", (error: any) => {
+        console.error("VAPI ERROR:", error);
+        stopRecording();
+        const errMsg = error?.message || error?.error?.message || typeof error === "string" ? error : JSON.stringify(error);
+        setStatus({ error: `Voice API Error: ${errMsg}` });
+      });
+
+      vapi.on("message", (message: any) => {
+        console.log("VAPI MESSAGE:", message);
+
+        const type = message?.type;
+
+        // Actual transcript messages
+        if (type === "transcript" && message.role === "user") {
+          const transcriptText =
+            message?.transcript ||
+            message?.text ||
+            message?.transcript?.text ||
+            "";
+
+          console.log("VAPI TRANSCRIPT:", transcriptText);
+          console.log("VAPI TRANSCRIPT TYPE:", message.transcriptType || (message.isFinal ? "final" : "partial"));
+
+          if (transcriptText.trim()) {
+            const isFinal = message.transcriptType === "final" || message.isFinal === true;
+            
+            if (isFinal) {
+              setText((prev) => {
+                const cleanPrev = prev.replace(/\s*\.\.\.$/, "").trim();
+                const newText = cleanPrev ? `${cleanPrev} ${transcriptText.trim()}` : transcriptText.trim();
+                baselineTextRef.current = newText;
+                return newText;
+              });
+              setVoiceUsed(true);
+            } else {
+              // It's a partial/interim transcript
+              setText((prev) => {
+                const cleanPrev = prev.replace(/\s*\.\.\.$/, "").trim();
+                return cleanPrev ? `${cleanPrev} ${transcriptText.trim()}...` : `${transcriptText.trim()}...`;
+              });
+            }
           }
         }
-        if (currentTranscript.trim()) {
-          setText((prev) => {
-            const base = prev.trim();
-            return base ? `${base} ${currentTranscript.trim()}` : currentTranscript.trim();
-          });
-          setVoiceUsed(true);
+
+        // Some Vapi configurations send conversation updates
+        if (type === "conversation-update") {
+          const messages = message?.messages;
+
+          if (Array.isArray(messages)) {
+            const userMessages = messages.filter(
+              (m: any) => m?.role === "user"
+            );
+
+            const latest = userMessages[userMessages.length - 1];
+
+            if (latest?.content) {
+              console.log("VAPI TRANSCRIPT:", latest.content);
+              console.log("VAPI TRANSCRIPT TYPE:", "conversation-update-final");
+
+              setText(latest.content);
+              setVoiceUsed(true);
+            }
+          }
         }
+      });
+
+      const langCode = selectedLang === "hi-IN" ? "hi" : "en-IN";
+      console.log("VAPI LANGUAGE:", langCode);
+
+      const assistantConfig = {
+        name: "CheckInListener",
+        firstMessage: "",
+        clientMessages: [
+          "transcript",
+          "conversation-update",
+          "speech-update"
+        ] as any,
+        model: {
+          provider: "openai" as const,
+          model: "gpt-3.5-turbo" as const,
+          messages: [
+            {
+              role: "system" as const,
+              content: "You are a friendly transcriber assistant. When the user speaks, just reply with 'Okay, I am listening.'",
+            },
+          ],
+        },
+        transcriber: {
+          provider: "deepgram" as const,
+          model: "nova-2" as const,
+          language: langCode as any,
+        },
       };
 
-      recognition.onerror = (err) => {
-        console.warn("Speech recognition error:", err.error);
-        stopRecording();
-      };
-
-      recognition.onend = () => {
+      vapi.start(assistantConfig).catch((err: Error) => {
+        console.error("Failed to start Vapi:", err);
+        setStatus({ error: "Microphone access is required to use voice check-in, or connection failed." });
         setIsRecording(false);
         if (timerRef.current) clearInterval(timerRef.current);
-      };
+      });
 
-      recognition.start();
-      recognitionRef.current = recognition;
-      setIsRecording(true);
-      setRecordingSeconds(0);
-      timerRef.current = setInterval(() => {
-        setRecordingSeconds((sec) => sec + 1);
-      }, 1000);
+      setStatus({ message: "Connecting to secure voice service..." });
     } catch (err) {
       console.error("Failed to start speech recognition:", err);
-      // Fallback
-      loadSampleVoiceCheckIn("distressed_hindi");
+      setStatus({ error: "Voice check-in is unavailable right now." });
     }
   }
 
+  const [isFinishing, setIsFinishing] = useState(false);
+
   function stopRecording() {
-    if (recognitionRef.current) {
+    if (vapiRef.current) {
       try {
-        recognitionRef.current.stop();
+        // Mute the microphone to stop listening but keep socket alive
+        vapiRef.current.setMuted(true);
+        setIsFinishing(true);
+        setStatus({ message: "Fetching final transcription..." });
+
+        // Give the deepgram transcriber 2.5 seconds to flush the buffer
+        // backwards over the WebSocket before we destroy the WebRTC connection.
+        setTimeout(() => {
+          try { vapiRef.current?.stop(); } catch (e) { }
+          setIsFinishing(false);
+          setIsRecording(false);
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
+        }, 2500);
+        return;
       } catch {
         // ignore
       }
@@ -140,17 +233,8 @@ export function CheckInForm() {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+    setIsFinishing(false);
     setIsRecording(false);
-  }
-
-  function loadSampleVoiceCheckIn(sampleId: "distressed_hindi" | "stable_hindi" | "severe_english") {
-    const sample = generateMockVoiceTranscript(sampleId);
-    setText((prev) => (prev ? `${prev}\n\n${sample.transcript}` : sample.transcript));
-    setVoiceUsed(true);
-    setStatus({
-      message: `Simulated ${(sample.detectedLanguage || "hi").toUpperCase()} voice check-in transcribed into text.`,
-      success: true,
-    });
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -182,6 +266,32 @@ export function CheckInForm() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (status?.success) {
+    return (
+      <section className="rounded-lg border border-emerald-200 bg-card p-8 text-center shadow-sm" aria-live="polite">
+        <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600" aria-hidden="true" />
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Check-in recorded</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Thank you for checking in. Your response has been securely recorded and your support team can review it.
+        </p>
+        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link
+            href="/victim/check-in/history"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground no-underline hover:bg-primary/90"
+          >
+            View Check-In History
+          </Link>
+          <Link
+            href="/victim"
+            className="inline-flex items-center justify-center rounded-md border border-border px-4 py-2.5 text-sm font-semibold text-foreground no-underline hover:bg-secondary"
+          >
+            Back to Home
+          </Link>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -235,16 +345,26 @@ export function CheckInForm() {
       </div>
 
       {/* Voice Recording Control Bar */}
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
-        <div className="flex items-center gap-3">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+        <div className="flex items-center gap-2 flex-wrap">
           {isRecording ? (
             <button
               type="button"
               onClick={stopRecording}
-              className="inline-flex items-center gap-2 rounded-full bg-destructive px-3.5 py-1.5 text-xs font-semibold text-destructive-foreground shadow-sm transition hover:bg-destructive/90 animate-pulse"
+              disabled={isFinishing}
+              className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-sm transition ${isFinishing ? 'bg-muted text-muted-foreground' : 'bg-destructive text-destructive-foreground hover:bg-destructive/90 animate-pulse'}`}
             >
-              <MicOff className="h-3.5 w-3.5" />
-              Stop Recording ({recordingSeconds}s)
+              {isFinishing ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Finishing...
+                </>
+              ) : (
+                <>
+                  <MicOff className="h-3.5 w-3.5" />
+                  Stop Recording ({recordingSeconds}s)
+                </>
+              )}
             </button>
           ) : (
             <button
@@ -258,35 +378,45 @@ export function CheckInForm() {
             </button>
           )}
 
-          {isRecording && (
-            <span className="flex items-center gap-1.5 text-xs text-destructive font-medium animate-pulse">
-              <span className="h-2 w-2 rounded-full bg-destructive" />
-              Listening to your voice… Speak naturally
-            </span>
-          )}
-        </div>
-
-        {/* Quick Demo Voice Fillers (for testing when microphone is inaccessible) */}
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span className="text-[11px]">Demo voice audio:</span>
+          {/* Hardcoded Demo Scenario Buttons */}
           <button
             type="button"
-            onClick={() => loadSampleVoiceCheckIn("distressed_hindi")}
-            className="inline-flex items-center gap-1 rounded bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground hover:bg-secondary/80"
+            onClick={() => {
+              setText("Someone is threatening me to kill and he is outside the door knocking very hard with weapons.");
+              setVoiceUsed(false);
+            }}
+            className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-[11px] font-semibold text-orange-700 shadow-sm transition hover:bg-orange-100 dark:border-orange-900/50 dark:bg-orange-950/40 dark:text-orange-400"
+            disabled={isRecording}
           >
-            <Sparkles className="h-3 w-3 text-amber-500" />
-            Distressed (Hindi)
+            Threat Scenario
           </button>
+          
           <button
             type="button"
-            onClick={() => loadSampleVoiceCheckIn("stable_hindi")}
-            className="inline-flex items-center gap-1 rounded bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground hover:bg-secondary/80"
+            onClick={() => {
+              setText("I am being continuously threatened and harassed, and I am afraid for my safety and do not know what to do.");
+              setVoiceUsed(false);
+            }}
+            className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-[11px] font-semibold text-orange-700 shadow-sm transition hover:bg-orange-100 dark:border-orange-900/50 dark:bg-orange-950/40 dark:text-orange-400"
+            disabled={isRecording}
           >
-            <Sparkles className="h-3 w-3 text-emerald-500" />
-            Stable (Hindi)
+            Harassment Scenario
           </button>
         </div>
+        
+        {isRecording && !isFinishing && (
+          <span className="flex items-center gap-1.5 text-xs text-destructive font-medium animate-pulse">
+            <span className="h-2 w-2 rounded-full bg-destructive" />
+            Transcribing…
+          </span>
+        )}
       </div>
+
+      {status?.message && !status?.success && (
+        <div className="mt-3 rounded-md bg-secondary/60 p-3 text-xs text-muted-foreground" role="status">
+          {status.message}
+        </div>
+      )}
 
       <textarea
         id="check-in-text"

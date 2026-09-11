@@ -157,10 +157,43 @@ export default async function VictimHomePage() {
         </p>
       </section>
 
-      {/* ── Section 2: Primary Check-in CTA ────────────────────────────── */}
-      <section className="mb-8" aria-labelledby="victim-checkin-heading">
-        {recentlyCheckedIn ? (
-          /* Already checked in state */
+      {/* ── Section 2: Persistent Check-in CTA ───────────────────────── */}
+      <section className="mb-8" aria-labelledby="victim-need-to-talk-heading">
+        <Link
+          href={ROUTES.victim.checkIn}
+          className="group relative block overflow-hidden rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/[0.04] to-accent/[0.04] p-6 no-underline shadow-sm transition-all hover:border-primary/30 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          {/* Decorative left accent bar */}
+          <div
+            className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary to-accent/80"
+            aria-hidden="true"
+          />
+          <div className="flex items-start gap-4 pl-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10">
+              <Heart className="h-5 w-5 text-primary" aria-hidden="true" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2
+                id="victim-need-to-talk-heading"
+                className="text-lg font-semibold text-foreground"
+              >
+                Need to talk?
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                If something is worrying you, or you just want to share how you&rsquo;re feeling, you can check in with your support team.
+              </p>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+                Share how I&rsquo;m feeling
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+              </span>
+            </div>
+          </div>
+        </Link>
+      </section>
+
+      {/* ── Section 2.5: Recent Check-in Status ────────────────────────────── */}
+      {recentlyCheckedIn && (
+        <section className="mb-8" aria-labelledby="victim-checkin-summary-heading">
           <div
             className="relative overflow-hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50/80 to-white p-6 shadow-sm"
           >
@@ -170,7 +203,7 @@ export default async function VictimHomePage() {
               </div>
               <div className="min-w-0 flex-1">
                 <h2
-                  id="victim-checkin-heading"
+                  id="victim-checkin-summary-heading"
                   className="text-lg font-semibold text-foreground"
                 >
                   Thanks for checking in
@@ -184,7 +217,7 @@ export default async function VictimHomePage() {
                   </p>
                 )}
                 <Link
-                  href={ROUTES.victim.checkIn}
+                  href={ROUTES.victim.checkInHistory}
                   className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 no-underline hover:underline"
                 >
                   View check-in history
@@ -193,41 +226,8 @@ export default async function VictimHomePage() {
               </div>
             </div>
           </div>
-        ) : (
-          /* Check-in prompt */
-          <Link
-            href={ROUTES.victim.checkIn}
-            id="cta-check-in"
-            className="group relative block overflow-hidden rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/[0.04] to-accent/[0.04] p-6 no-underline shadow-sm transition-all hover:border-primary/30 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            {/* Decorative left accent bar */}
-            <div
-              className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary to-accent/80"
-              aria-hidden="true"
-            />
-            <div className="flex items-start gap-4 pl-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                <Heart className="h-5 w-5 text-primary" aria-hidden="true" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h2
-                  id="victim-checkin-heading"
-                  className="text-lg font-semibold text-foreground"
-                >
-                  How are you doing today?
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                  Take a moment to share how you&rsquo;re feeling with your support team.
-                </p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-                  Check in now
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-                </span>
-              </div>
-            </div>
-          </Link>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* ── Secondary sections — two-column on desktop ─────────────────── */}
       <div className="grid gap-5 sm:grid-cols-2">

@@ -40,6 +40,7 @@ export const ROUTES = {
     root:    "/victim",
     case:    "/victim/case",
     checkIn: "/victim/check-in",
+    checkInHistory: "/victim/check-in/history",
     data:    "/victim/data",
     support: "/victim/support",
   },

@@ -8,6 +8,8 @@ import { listProfilesByRole } from "@/lib/db/profiles";
 import { CaseAssignmentManager } from "@/components/admin/CaseAssignmentManager";
 import type { CaseRow, ProfileRow } from "@/types/database.types";
 
+import { CreateVictimForm } from "@/components/management/CreateVictimForm";
+
 export const metadata: Metadata = { title: "Case Assignments" };
 
 type CaseWithRelations = CaseRow & {
@@ -37,11 +39,14 @@ export default async function AdminAssignmentsPage() {
         <strong>Administrative Authority:</strong> Assigning a case grants the authorized counselor access to confidential notes and check-in history.
       </div>
 
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Case Assignments</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Allocate incoming victim cases to certified support counselors and monitor district caseloads.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Case Assignments</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Allocate incoming victim cases to certified support counselors and monitor district caseloads.
+          </p>
+        </div>
+        <CreateVictimForm isAdmin={true} counselors={counselors} />
       </div>
 
       <CaseAssignmentManager

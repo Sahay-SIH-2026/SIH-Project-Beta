@@ -9,6 +9,8 @@ import { formatDateOnly } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 
 
+import { CreateVictimForm } from "@/components/management/CreateVictimForm";
+
 import type { CaseStatus } from "@/types/database.types";
 
 export const metadata: Metadata = { title: "Cases" };
@@ -53,13 +55,14 @@ export default async function CounselorCasesPage({ searchParams }: CasesPageProp
         <strong>Synthetic data only.</strong> All cases and victim names represent synthetic test records.
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Caseload Overview</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Manage your assigned cases and review ongoing client continuity.
           </p>
         </div>
+        <CreateVictimForm isAdmin={false} />
       </div>
 
       {/* Filter Tabs */}
