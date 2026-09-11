@@ -23,6 +23,8 @@ import { TrendChart } from "@/components/counselor/TrendChart";
 import { ExplainabilityPanel } from "@/components/counselor/ExplainabilityPanel";
 import { InterventionRecommendations } from "@/components/counselor/InterventionRecommendations";
 import { AIInsightsCard } from "@/components/counselor/AIInsightsCard";
+import { RecordSessionStatement } from "@/components/counselor/RecordSessionStatement";
+import { CaseHistoryGraph } from "@/components/counselor/CaseHistoryGraph";
 import { generateCaseInsights } from "@/lib/ai/service";
 import type { AIInsightsResult } from "@/lib/ai/types";
 import { evaluateSignalRules } from "@/lib/risk/rule-engine";
@@ -39,18 +41,26 @@ import {
   Mic,
 } from "lucide-react";
 
-import type { CaseStatus, FollowUpRow, RiskScoreRow } from "@/types/database.types";
+import type {
+  CaseStatus,
+  FollowUpRow,
+  RiskScoreRow,
+} from "@/types/database.types";
 
 interface CaseDetailsPageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: CaseDetailsPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: CaseDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
   return { title: `Case Details — ${id.slice(0, 8)}` };
 }
 
-export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) {
+export default async function CaseDetailsPage({
+  params,
+}: CaseDetailsPageProps) {
   const { id } = await params;
 
   let caseItem = null;
@@ -59,13 +69,24 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
     response_text: string | null;
     submitted_at: string;
     voice_input_used: boolean;
+    distress_level?: string | null;
+    distress_score?: number | null;
+    immediate_danger?: boolean | null;
+    distress_signals?: string[] | null;
+    distress_reason?: string | null;
   }> = [];
+
   let interactions: Array<{
     id: string;
     channel: string;
     occurred_at: string;
     summary: string | null;
     recorder: { display_name: string } | null;
+    distress_level?: string | null;
+    distress_score?: number | null;
+    immediate_danger?: boolean | null;
+    distress_signals?: string[] | null;
+    distress_reason?: string | null;
   }> = [];
   let followUps: FollowUpRow[] = [];
   let riskScores: RiskScoreRow[] = [];
@@ -94,11 +115,15 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
   }
 
   const victim = caseItem.victim as { id: string; display_name: string } | null;
-  const counselor = caseItem.counselor as { id: string; display_name: string } | null;
+  const counselor = caseItem.counselor as {
+    id: string;
+    display_name: string;
+  } | null;
 
   // Longitudinal Signal & Intervention Analysis
   const sortedScores = [...riskScores].sort(
-    (a, b) => new Date(b.computed_at).getTime() - new Date(a.computed_at).getTime()
+    (a, b) =>
+      new Date(b.computed_at).getTime() - new Date(a.computed_at).getTime(),
   );
   const latestScore = sortedScores[0] || null;
 
@@ -109,15 +134,17 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
     ? Math.max(
         0,
         Math.floor(
-          (new Date().getTime() - new Date(latestCheckIn.submitted_at).getTime()) /
-            (1000 * 3600 * 24)
-        )
+          (new Date().getTime() -
+            new Date(latestCheckIn.submitted_at).getTime()) /
+            (1000 * 3600 * 24),
+        ),
       )
     : 0;
 
   const evaluation = evaluateSignalRules({
     currentText:
-      latestCheckIn?.response_text || (latestScore ? latestScore.signal_reason : ""),
+      latestCheckIn?.response_text ||
+      (latestScore ? latestScore.signal_reason : ""),
     previousScores: prevScores,
     daysSinceLastCheckIn: daysSinceLast,
   });
@@ -150,32 +177,74 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
             <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <User className="h-3.5 w-3.5 text-primary" /> Victim:{" "}
-                <strong className="text-foreground">{victim?.display_name || "Unlinked"}</strong>
+                <strong className="text-foreground">
+                  {victim?.display_name || "Unlinked"}
+                </strong>
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5 text-primary" /> Opened:{" "}
-                <strong className="text-foreground">{formatDateOnly(caseItem.opened_at)}</strong>
+                <strong className="text-foreground">
+                  {formatDateOnly(caseItem.opened_at)}
+                </strong>
               </span>
               <span>
                 Assigned to:{" "}
-                <strong className="text-foreground">{counselor?.display_name || "Unassigned"}</strong>
+                <strong className="text-foreground">
+                  {counselor?.display_name || "Unassigned"}
+                </strong>
               </span>
             </div>
           </div>
 
-          <CaseStatusChanger caseId={caseItem.id} initialStatus={caseItem.status as CaseStatus} />
+          <CaseStatusChanger
+            caseId={caseItem.id}
+            initialStatus={caseItem.status as CaseStatus}
+          />
         </div>
       </div>
 
       {/* Main Grid: 2 columns */}
       <div className="grid min-w-0 items-start gap-6 lg:grid-cols-2">
         {/* Left Column (2 cols): Check-ins and Interactions */}
-        <div className="min-w-0 space-y-6">
+        <div className="min-w-0 space-y-6 lg:col-span-2">
+          <CaseHistoryGraph
+            data={[
+              ...checkIns
+                .filter(
+                  (ci) =>
+                    ci.distress_score !== null &&
+                    ci.distress_score !== undefined,
+                )
+                .map((ci) => ({
+                  id: ci.id,
+                  distress_score: ci.distress_score as number,
+                  distress_level: ci.distress_level as string,
+                  submitted_at: ci.submitted_at,
+                  type: "check_in" as const,
+                })),
+              ...interactions
+                .filter(
+                  (inter) =>
+                    inter.distress_score !== null &&
+                    inter.distress_score !== undefined,
+                )
+                .map((inter) => ({
+                  id: inter.id,
+                  distress_score: inter.distress_score as number,
+                  distress_level: inter.distress_level as string,
+                  submitted_at: inter.occurred_at,
+                  type: "interaction" as const,
+                })),
+            ]}
+          />
+
+          <RecordSessionStatement caseId={caseItem.id} />
           {/* Check-In History */}
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-                <ClipboardList className="h-4 w-4 text-primary" /> Check-In Timeline
+                <ClipboardList className="h-4 w-4 text-primary" /> Check-In
+                Timeline
               </h3>
               <span className="rounded bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
                 {checkIns.length} recorded
@@ -194,7 +263,9 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
                     className="rounded-md border border-border/70 bg-secondary/20 p-4 transition hover:bg-secondary/40"
                   >
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
-                      <span className="font-medium text-foreground">{formatDate(ci.submitted_at)}</span>
+                      <span className="font-medium text-foreground">
+                        {formatDate(ci.submitted_at)}
+                      </span>
                       {ci.response_text?.includes("[SMS via") ? (
                         <span className="inline-flex items-center gap-1 rounded bg-purple-100 px-2 py-0.5 text-[10px] font-semibold text-purple-800 dark:bg-purple-950/50 dark:text-purple-300">
                           <MessageSquare className="h-3 w-3" /> SMS Ingestion
@@ -220,6 +291,74 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
                     <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
                       {ci.response_text || "(No response text provided)"}
                     </p>
+
+                    {ci.distress_level && (
+                      <div className="mt-3 rounded-md bg-background/50 border border-border p-3 space-y-2">
+                        <div className="flex items-center justify-between text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            AI Distress Analysis
+                          </span>
+                          {ci.immediate_danger && (
+                            <span className="text-red-600 bg-red-100 px-1.5 py-0.5 rounded border border-red-200 dark:bg-red-950/50 dark:border-red-900 flex items-center gap-1 animate-pulse">
+                              Immediate Danger Warning
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-muted-foreground mr-1">
+                              Level:
+                            </span>
+                            <span
+                              className={`font-semibold ${
+                                ci.distress_level.toLowerCase() ===
+                                  "critical" ||
+                                ci.distress_level.toLowerCase() === "high"
+                                  ? "text-red-600 dark:text-red-400"
+                                  : ci.distress_level.toLowerCase() ===
+                                      "moderate"
+                                    ? "text-orange-600 dark:text-orange-400"
+                                    : "text-emerald-600 dark:text-emerald-400"
+                              }`}
+                            >
+                              {ci.distress_level.toUpperCase()}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground mr-1">
+                              Score:
+                            </span>
+                            <span className="font-mono font-medium">
+                              {ci.distress_score?.toFixed(2) || "N/A"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {ci.distress_signals &&
+                          ci.distress_signals.length > 0 && (
+                            <div className="text-xs">
+                              <span className="text-muted-foreground mr-1">
+                                Signals:
+                              </span>
+                              <span className="text-foreground">
+                                {ci.distress_signals.join(", ")}
+                              </span>
+                            </div>
+                          )}
+
+                        {ci.distress_reason && (
+                          <div className="text-xs mt-1">
+                            <span className="text-muted-foreground mr-1">
+                              Reason:
+                            </span>
+                            <span className="text-foreground italic">
+                              {ci.distress_reason}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -230,7 +369,8 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-primary" /> Multi-Channel Contact History
+                <MessageSquare className="h-4 w-4 text-primary" /> Multi-Channel
+                Contact History
               </h3>
               <span className="rounded bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
                 {interactions.length} contacts
@@ -241,7 +381,8 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
 
             {interactions.length === 0 ? (
               <p className="text-sm text-muted-foreground italic py-2">
-                No contact interactions recorded yet. Use the form above to log calls or in-person sessions.
+                No contact interactions recorded yet. Use the form above to log
+                calls or in-person sessions.
               </p>
             ) : (
               <div className="divide-y divide-border">
@@ -249,7 +390,8 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
                   <div key={inter.id} className="py-3.5 first:pt-0 last:pb-0">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                       <div className="flex items-center gap-2">
-                        {inter.summary?.includes("14566") || inter.summary?.includes("Helpline") ? (
+                        {inter.summary?.includes("14566") ||
+                        inter.summary?.includes("Helpline") ? (
                           <span className="inline-flex items-center gap-1 rounded bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-800 dark:bg-rose-950/50 dark:text-rose-300">
                             <PhoneCall className="h-3 w-3" /> Helpline 14566
                           </span>
@@ -296,12 +438,18 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
             <p className="text-xs text-muted-foreground mb-3">
               Visible only to authorized counselors handling this case.
             </p>
-            <CaseNotesEditor caseId={caseItem.id} initialNotes={caseItem.notes} />
+            <CaseNotesEditor
+              caseId={caseItem.id}
+              initialNotes={caseItem.notes}
+            />
           </div>
 
           {/* Follow-Ups */}
           <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-            <CaseFollowUpManager caseId={caseItem.id} initialFollowUps={followUps} />
+            <CaseFollowUpManager
+              caseId={caseItem.id}
+              initialFollowUps={followUps}
+            />
           </div>
 
           {/* GenAI Clinical Decision Support Dossier (Streamed via Suspense) */}

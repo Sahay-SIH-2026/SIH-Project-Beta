@@ -64,5 +64,13 @@ export interface AIInsightsResult {
   factsVsInferences: StructuredFactVsInference;
   suggestedTalkingPoints: string[]; // 2-3 actionable counselor conversation topics
   generatedAt: string; // ISO timestamp
-  providerUsed: "GEMINI_2_5_FLASH" | "LOCAL_HEURISTIC_ML";
+  providerUsed: "GEMINI_2_5_FLASH" | "LOCAL_HEURISTIC_ML" | "LOCAL_OLLAMA";
+}
+
+export interface CaseSynthesisInput {
+  caseRef: string;
+  victimName?: string;
+  checkInTexts: string[];
+  interactionSummaries: string[];
+  riskScores: Array<{ score: number; computed_at: string; signal_reason: string }>;
 }

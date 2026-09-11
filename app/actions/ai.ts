@@ -26,6 +26,13 @@ export async function generateCaseInsightsAction(caseId: string): Promise<{
 
     const insights = await generateCaseInsights(caseId);
 
+    // Save to database cache
+    const supabase = await import("@/lib/supabase/server").then(m => m.createServerClient());
+    await supabase.from("cases").update({
+      latest_ai_insights: insights,
+      insights_updated_at: new Date().toISOString(),
+    }).eq("id", caseId);
+
     // Record audit log
     await logAuditEvent({
       actor_id: profile.id,

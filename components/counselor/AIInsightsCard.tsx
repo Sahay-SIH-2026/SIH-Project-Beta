@@ -108,7 +108,7 @@ export function AIInsightsCard({ caseId, initialInsights }: AIInsightsCardProps)
             >
               {insights.providerUsed === "GEMINI_2_5_FLASH"
                 ? "Gemini 2.5 Flash"
-                : "Deterministic NLP Engine"}
+                : "Ollama + Risk Engine"}
             </span>
           )}
 
