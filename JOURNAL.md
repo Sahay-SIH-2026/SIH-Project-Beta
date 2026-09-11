@@ -24,6 +24,65 @@ Each entry follows this template:
 
 ---
 
+### 2026-09-11 — Disable Next.js development indicator
+**Type:** Performance | Configuration
+**Files changed:** `next.config.ts`, `JOURNAL.md`
+**Status:** ✅ Done — the official Next.js development tools indicator is disabled without changing application loading states.
+
+#### What changed
+
+- Added `devIndicators: false` to `next.config.ts`, the supported Next.js 16.3.4 configuration for removing the bottom-left `N` / `Rendering` development indicator.
+- Re-verified portal navigation after restarting the development server and against a production server.
+- Confirmed authenticated pages remain dynamic and continue using the existing Supabase session, role, and RLS boundaries.
+
+#### Findings and validation
+
+- The remaining visible `Rendering` state was Next.js DevTools, not an LUMA component or CSS loading state.
+- No normal-navigation `router.refresh`, `router.push`, `router.replace`, `window.location`, or raw internal anchor usage was found.
+- Victim, counselor, and admin layouts remained mounted during sibling navigation; each measured transition issued one RSC request and no duplicate browser API requests.
+- `npx tsc --noEmit`, `npm run lint`, and `npm run build` passed.
+- Development and production browser checks showed no Next.js indicator and no full browser reload.
+
+#### Remaining limitation
+
+- Personalized portal routes remain dynamic because middleware and page helpers must perform cookie-bound authentication and Supabase reads. This is intentionally preserved to avoid stale authorization or cross-user data exposure.
+
+---
+
+### 2026-09-11 — Optimize portal navigation rendering
+**Type:** Performance | Refactor
+**Files changed:** `app/counselor/page.tsx`, `app/victim/page.tsx`, `app/victim/loading.tsx`, `app/counselor/loading.tsx`, `app/admin/loading.tsx`
+**Status:** ✅ Done — independent server reads are parallelized and portal shells remain visible during child-route loading.
+
+#### What changed
+
+- Parallelized the counselor dashboard's independent cases, alerts, check-ins, follow-up, and risk-score queries with `Promise.all`.
+- Parallelized the victim dashboard's independent case and latest-check-in queries.
+- Added route-level loading boundaries for all three authenticated portals so their existing layouts and navigation remain mounted while page content loads.
+- Preserved all existing query filters, authorization boundaries, routes, APIs, and rendered functionality.
+
+#### Browser verification
+
+- The visible `Rendering` label is produced by the Next.js DevTools button during development RSC navigation; it is not rendered by LUMA.
+- Victim, counselor, and admin sibling-route probes each made one RSC navigation request per click, preserved one portal shell DOM node, and showed no duplicate browser API requests.
+- The first navigation in each warm-up sequence was slower because Turbopack compiled the route; subsequent transitions completed in approximately 0.8–1.3 seconds in the local development server.
+
+#### Validation
+
+- `npx tsc --noEmit` passed.
+- `npm run lint` passed.
+- `npm run build` passed; authenticated Supabase pages remain dynamic as required.
+- `npm run test:channels` passed.
+- `npm run test:api` passed.
+
+#### Remaining bottlenecks
+
+- Authenticated pages still perform fresh cookie-bound Supabase reads on navigation by design; globally caching them would risk stale or cross-user data.
+- Server-side cookie/session verification remains dynamic by design; removing it or globally caching personalized data would risk stale authorization or cross-user data exposure.
+- Next.js reports the existing middleware-to-proxy convention deprecation warning.
+
+---
+
 ### 2026-09-11 — Rebrand application to LUMA
 **Type:** Refactor | Documentation
 **Files changed:** Application metadata, UI copy, CSS utility naming, API health metadata, package metadata, demo domains, Supabase seed/repair files, documentation, and project guidance.

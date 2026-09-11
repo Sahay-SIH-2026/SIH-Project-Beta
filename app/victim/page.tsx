@@ -37,29 +37,28 @@ export default async function VictimHomePage() {
   if (profile) {
     try {
       const supabase = await createServerClient();
-      const { data: c } = await supabase
-        .from("cases")
-        .select("id, case_ref, status, opened_at, counselor:profiles!cases_counselor_id_fkey(display_name)")
-        .eq("victim_id", profile.id)
-        .order("opened_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (c) {
-        caseRecord = c as unknown as VictimCaseInfo;
-
-
-        const { data: ci } = await supabase
+      const [{ data: c }, { data: ci }] = await Promise.all([
+        supabase
+          .from("cases")
+          .select("id, case_ref, status, opened_at, counselor:profiles!cases_counselor_id_fkey(display_name)")
+          .eq("victim_id", profile.id)
+          .order("opened_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        supabase
           .from("check_ins")
           .select("id, submitted_at")
           .eq("victim_id", profile.id)
           .order("submitted_at", { ascending: false })
           .limit(1)
-          .maybeSingle();
+          .maybeSingle(),
+      ]);
 
-        if (ci) {
-          latestCheckIn = ci;
-        }
+      if (c) {
+        caseRecord = c as unknown as VictimCaseInfo;
+      }
+      if (ci) {
+        latestCheckIn = ci;
       }
     } catch (e) {
       console.error("Error loading victim home data:", e);

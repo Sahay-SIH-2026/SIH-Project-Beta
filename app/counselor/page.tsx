@@ -32,44 +32,42 @@ export default async function CounselorDashboardPage() {
     try {
       const supabase = await createServerClient();
 
-      // Assigned cases
-      const { data: casesData } = await supabase
-        .from("cases")
-        .select("id, case_ref, status, opened_at, victim:profiles!cases_victim_id_fkey(display_name)")
-        .or(`counselor_id.eq.${profile.id},counselor_id.is.null`)
-        .order("opened_at", { ascending: false });
-
-      assignedCases = (casesData as unknown as typeof assignedCases) || [];
-
-      // Alerts needing review
-      const { count: aCount } = await supabase
-        .from("alerts")
-        .select("*", { count: "exact", head: true })
-        .in("status", ["NEW", "UNDER_REVIEW"]);
-      alertCount = aCount || 0;
-
-      // Recent check-ins
-      const { count: cCount } = await supabase
-        .from("check_ins")
-        .select("*", { count: "exact", head: true });
-      recentCheckInCount = cCount || 0;
-
-      // Pending followups
-      const { count: fCount } = await supabase
-        .from("follow_ups")
-        .select("*", { count: "exact", head: true })
-        .eq("counselor_id", profile.id)
-        .eq("status", "PENDING");
-      followUpsDueCount = fCount || 0;
-
-      // Caseload risk scores for the past 7 days
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const { data: scoresData } = await supabase
-        .from("risk_scores")
-        .select("score, computed_at, case_id")
-        .gte("computed_at", sevenDaysAgo.toISOString())
-        .order("computed_at", { ascending: true });
+
+      const [
+        { data: casesData },
+        { count: aCount },
+        { count: cCount },
+        { count: fCount },
+        { data: scoresData },
+      ] = await Promise.all([
+        supabase
+          .from("cases")
+          .select("id, case_ref, status, opened_at, victim:profiles!cases_victim_id_fkey(display_name)")
+          .or(`counselor_id.eq.${profile.id},counselor_id.is.null`)
+          .order("opened_at", { ascending: false }),
+        supabase
+          .from("alerts")
+          .select("*", { count: "exact", head: true })
+          .in("status", ["NEW", "UNDER_REVIEW"]),
+        supabase.from("check_ins").select("*", { count: "exact", head: true }),
+        supabase
+          .from("follow_ups")
+          .select("*", { count: "exact", head: true })
+          .eq("counselor_id", profile.id)
+          .eq("status", "PENDING"),
+        supabase
+          .from("risk_scores")
+          .select("score, computed_at, case_id")
+          .gte("computed_at", sevenDaysAgo.toISOString())
+          .order("computed_at", { ascending: true }),
+      ]);
+
+      assignedCases = (casesData as unknown as typeof assignedCases) || [];
+      alertCount = aCount || 0;
+      recentCheckInCount = cCount || 0;
+      followUpsDueCount = fCount || 0;
       recentScores = (scoresData as unknown as typeof recentScores) || [];
     } catch (e) {
       console.error("Error loading counselor dashboard data:", e);
