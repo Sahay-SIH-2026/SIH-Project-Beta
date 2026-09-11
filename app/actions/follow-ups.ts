@@ -2,6 +2,7 @@
 
 import { createServerClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/db/profiles";
+import { requireCaseAccess } from "@/lib/auth/case-access";
 import { logAuditEvent } from "@/lib/db/audit";
 import { revalidatePath } from "next/cache";
 
@@ -18,10 +19,7 @@ export async function createFollowUpAction(
   description?: string
 ): Promise<FollowUpActionState> {
   try {
-    const profile = await getCurrentProfile();
-    if (!profile || (profile.role !== "COUNSELOR" && profile.role !== "ADMIN")) {
-      return { error: "Unauthorized: only staff can schedule follow-ups." };
-    }
+    const { profile } = await requireCaseAccess(caseId);
 
     if (!title || title.trim().length === 0) {
       return { error: "Please enter a title for the follow-up." };

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCaseById } from "@/lib/db/cases";
+import { requireCaseAccess } from "@/lib/auth/case-access";
 import { getCheckInsByCaseId } from "@/lib/db/check-ins";
 import { getInteractionsByCaseId } from "@/lib/db/interactions";
 import { getFollowUps } from "@/lib/db/follow-ups";
@@ -67,6 +68,7 @@ export default async function CaseDetailsPage({ params }: CaseDetailsPageProps) 
   let riskScores: RiskScoreRow[] = [];
 
   try {
+    await requireCaseAccess(id);
     caseItem = await getCaseById(id);
     if (!caseItem) {
       notFound();

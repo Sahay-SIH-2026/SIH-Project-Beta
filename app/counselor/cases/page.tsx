@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getCases } from "@/lib/db/cases";
+import { getCurrentProfile } from "@/lib/db/profiles";
 import { formatDateOnly } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 
@@ -41,7 +42,11 @@ export default async function CounselorCasesPage({ searchParams }: CasesPageProp
   }> = [];
 
   try {
-    const data = await getCases(filterStatus ? { status: filterStatus } : undefined);
+    const profile = await getCurrentProfile();
+    if (!profile || profile.role !== "COUNSELOR") {
+      return null;
+    }
+    const data = await getCases({ counselorId: profile.id, status: filterStatus });
     cases = (data as unknown as typeof cases) || [];
   } catch (e) {
     console.error("Error loading counselor cases:", e);

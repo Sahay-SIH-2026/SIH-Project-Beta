@@ -45,7 +45,7 @@ export default async function CounselorDashboardPage() {
         supabase
           .from("cases")
           .select("id, case_ref, status, opened_at, victim:profiles!cases_victim_id_fkey(display_name)")
-          .or(`counselor_id.eq.${profile.id},counselor_id.is.null`)
+          .eq("counselor_id", profile.id)
           .order("opened_at", { ascending: false }),
         supabase
           .from("alerts")

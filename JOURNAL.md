@@ -24,6 +24,16 @@ Each entry follows this template:
 
 ---
 
+### 2026-09-11 — Enforce counsellor assignment boundaries
+**Type:** Security | Bug Fix
+**Files changed:** `app/counselor/page.tsx`, `app/counselor/cases/page.tsx`, `app/counselor/cases/[id]/page.tsx`, `lib/auth/case-access.ts`, `app/actions/cases.ts`, `app/actions/interactions.ts`, `app/actions/follow-ups.ts`, `app/actions/risk.ts`, `supabase/schema.sql`, `supabase/migrations/20260908000000_initial_schema.sql`, `supabase/migrations/20260911000000_enforce_counselor_case_scope.sql`
+**Status:** ⚠️ Needs Supabase migration application
+
+- Removed the dashboard query that deliberately included unassigned cases (`counselor_id IS NULL`). Both caseload views now request only the signed-in counselor’s assigned records.
+- Added a server-side `requireCaseAccess` guard before rendering a case workspace or accepting case status, notes, interaction, follow-up, or risk-review actions. This blocks direct-URL and forged server-action attempts even before database policy enforcement.
+- Added a defence-in-depth RLS migration. It limits counselors to their own assigned cases and dependent check-ins, interactions, alerts, risk scores, follow-ups, and victim profiles. It also requires cases created by a counselor to have that counselor as assignee; admins retain assignment and oversight permissions.
+- The migration must be run in the Supabase SQL Editor before this security fix is complete in the deployed database.
+
 ### 2026-09-11 — Fix active state for root navigation tabs
 **Type:** Bug Fix
 **Files changed:** `components/navigation/VictimNav.tsx`, `components/navigation/CounselorNav.tsx`, `components/navigation/AdminNav.tsx`
