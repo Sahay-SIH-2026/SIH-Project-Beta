@@ -33,7 +33,9 @@ export function VictimNav() {
         <div className="luma-container flex h-11 items-center justify-between">
           <div className="flex items-center gap-1">
             {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-              const active = pathname === href || pathname.startsWith(href + "/");
+              const active = href === ROUTES.victim.root 
+                ? pathname === href 
+                : pathname === href || pathname.startsWith(href + "/");
               return (
                 <Link
                   key={href}
@@ -62,7 +64,9 @@ export function VictimNav() {
         className="fixed inset-x-0 bottom-0 z-50 flex border-t border-border bg-white sm:hidden"
       >
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(href + "/");
+          const active = href === ROUTES.victim.root 
+            ? pathname === href 
+            : pathname === href || pathname.startsWith(href + "/");
           return (
             <Link
               key={href}

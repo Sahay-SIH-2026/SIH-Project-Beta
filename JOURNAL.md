@@ -24,6 +24,13 @@ Each entry follows this template:
 
 ---
 
+### 2026-09-11 — Fix active state for root navigation tabs
+**Type:** Bug Fix
+**Files changed:** `components/navigation/VictimNav.tsx`, `components/navigation/CounselorNav.tsx`, `components/navigation/AdminNav.tsx`
+**Status:** ✅ Done
+
+The active state calculation (`pathname.startsWith(href + "/")`) for navigation items incorrectly highlighted the "Home" / "Dashboard" root tabs when visiting any subpage because all subpages start with the root path (`/victim/`, `/counselor/`, `/admin/`). Updated the logic so the root tab only uses exact matching (`pathname === href`), while preserving `startsWith` for nested routing on other tabs.
+
 ### 2026-09-11 — Emergency Warning Toast & Credentials Update
 **Type:** Feature | Bug Fix
 **Files changed:** `app/actions/auth.ts`, `components/auth/VictimLoginToast.tsx`, `components/auth/LoginForm.tsx`, `app/victim/layout.tsx`, `app/victim/support/page.tsx`

@@ -36,7 +36,9 @@ export function AdminNav() {
       <nav className="flex-1 overflow-y-auto py-3">
         <ul role="list" className="space-y-0.5 px-2">
           {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(href + "/");
+            const active = href === ROUTES.admin.root 
+              ? pathname === href 
+              : pathname === href || pathname.startsWith(href + "/");
             return (
               <li key={href}>
                 <Link
