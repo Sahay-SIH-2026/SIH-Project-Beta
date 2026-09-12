@@ -86,11 +86,6 @@ export async function submitCheckInAction(
         victim_id: profile.id,
         response_text: responseText,
         voice_input_used: voiceInputUsed,
-        distress_level: calculatedLevel,
-        distress_score: riskEval.score,
-        immediate_danger: isImmediateDanger,
-        distress_signals: extractedSignals,
-        distress_reason: aiAnalysis?.reason || null,
       })
       .select()
       .single();
@@ -98,6 +93,19 @@ export async function submitCheckInAction(
     if (checkInError) {
       console.error("Supabase check_ins insert error:", checkInError);
       throw checkInError;
+    }
+
+    // Record the distress score independently 
+    const { error: riskError } = await supabase
+      .from("risk_scores")
+      .insert({
+        case_id: caseRecord.id,
+        score: riskEval.score,
+        signal_reason: aiAnalysis?.reason || `Extracted signals: ${extractedSignals.join(', ') || 'None'}`,
+      });
+
+    if (riskError) {
+      console.error("Supabase risk_scores insert error:", riskError);
     }
 
     // Log audit event

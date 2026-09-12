@@ -24,6 +24,15 @@ Each entry follows this template:
 
 ---
 
+### 2026-09-12 — Fix check-in insertion schema mutation error
+**Type:** Bug Fix
+**Files changed:** `app/actions/check-ins.ts`
+**Status:** ✅ Done
+
+Fixed `Failed to submit check-in` error on the victim portal. Attempted to insert computed distress features directly into the `check_ins` table, which lacks these columns dynamically. Dropped the extra columns from the `check_ins` insert and reliably redirected them into the foundational `risk_scores` table as specified by the domain logic.
+
+---
+
 ### 2026-09-12 — Fix case-details column layout
 **Type:** Bug Fix | UX
 **Files changed:** `app/counselor/cases/[id]/page.tsx`
